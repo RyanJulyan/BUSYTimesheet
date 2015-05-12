@@ -1,0 +1,243 @@
+<script>
+var app = {
+	data:{
+		version:"0.0.1",
+		tags:{}
+	},
+	editProperty:function(property, value){
+		/*
+		// Not working in time, Getting Duplicated Data
+		if(typeof this.data[property] != "undefined"){
+			this.data[property+"_old"] = this.data[property];
+		}
+		*/
+		this.data[property] = value;
+	},
+	editSubProperty:function(property,subproperty, value){
+		/*
+		// Not working in time, Getting Duplicated Data
+		if(typeof this.data[property][subproperty] != "undefined"){
+			this.data[property][subproperty+"_old"] = this.data[property][subproperty];
+		}
+		*/
+		this.data[property][subproperty] = value;
+	},
+	deleteProperty:function(property){
+		delete this.data[property]
+	},
+	deleteSubProperty:function(property,subproperty){
+		delete this.data[property][subproperty]
+	},
+	_ID:function(el){
+		return document.getElementById(el);
+	},
+	_IDval:function(el, val){
+		return document.getElementById(el).value = val;
+	},
+	_IDhtml:function(el, val){
+		return document.getElementById(el).innerHTML = val;
+	},
+	setLocalStorage: function(key, val){
+		console.log("Localhost");
+		localStorage.setItem(key, JSON.stringify(val));
+		this.data[key] = val;
+	},
+	getLocalStorage: function(key){
+		localStorageVal = localStorage.getItem(key);
+		try {
+			return this.data[key] = JSON.parse(localStorageVal);
+		}
+		catch(err) {
+			return this.data[key] = localStorageVal;
+		}
+	},
+	ajaxRequest: function(address_url){
+		var ajax = new XMLHttpRequest();
+		ajax.upload.addEventListener("progress", this.fileProgressHandler, false);
+		ajax.addEventListener("load", this.fileCompleteHandler, false);
+		ajax.addEventListener("error", this.fileErrorHandler, false);
+		ajax.addEventListener("abort", this.fileAbortHandler, false);
+		ajax.open("GET",address_url);
+		ajax.send();
+	},
+	fileUpload:function(file, url){
+		this.editProperty("file", {type:file.name});
+		this.editProperty("file", {type:file.type});
+		this.editProperty("file", {size:file.size});
+		var formdata = new FormData();
+		formdata.append("file1", file);
+		var ajax = new XMLHttpRequest();
+		ajax.upload.addEventListener("progress", this.fileProgressHandler, false);
+		ajax.addEventListener("load", this.fileCompleteHandler, false);
+		ajax.addEventListener("error", this.fileErrorHandler, false);
+		ajax.addEventListener("abort", this.fileAbortHandler, false);
+		ajax.open("POST", url);
+		ajax.send(formdata);
+	},
+	fileProgressHandler:function(event){
+		this.editProperty("file", {status:event.target.responseText});
+		this.editProperty("file", {totalUploadSize:event.total});
+		this.editProperty("file", {totalUploaded:event.loaded});
+		this.editProperty("totalUploadedMessage", "Uploaded "+event.loaded+" bytes of "+event.total);
+		this.editProperty("percentUploaded", Math.round((event.loaded / event.total) * 100));
+		this.editProperty("percentUploadedMessage", Math.round((event.loaded / event.total) * 100)+"% uploaded... please wait");
+	},
+	fileCompleteHandler:function(event){
+		console.log(this);
+		this.editProperty("file", {status:event.target.responseText});
+	},
+	fileErrorHandler:function(event){
+		this.editProperty("file", {status:"Upload Failed"});
+	},
+	fileAbortHandler:function(event){
+		this.editProperty("file", {status:"Upload Aborted"});
+	},
+	getLocation:function() {
+		if (navigator.geolocation) {
+			navigator.geolocation.getCurrentPosition(this.showPosition, this.showError);
+		} else {
+			return "Geolocation is not supported by this browser.";
+		}
+	},
+	showPosition:function(position) {
+		var latlon = position.coords.latitude + "," + position.coords.longitude;
+		
+		var address_url = "https://maps.googleapis.com/maps/api/geocode/json?latlng="+latlon+"&key=AIzaSyAdrM7sgTdLeqAzTB6_RmFnLB4IRkfKreY";
+		
+		this.ajaxRequest(address_url);
+	},
+	showError:function(error) {
+		switch(error.code) {
+			case error.PERMISSION_DENIED:
+				x.innerHTML = "User denied the request for Geolocation."
+				break;
+			case error.POSITION_UNAVAILABLE:
+				x.innerHTML = "Location information is unavailable."
+				break;
+			case error.TIMEOUT:
+				x.innerHTML = "The request to get user location timed out."
+				break;
+			case error.UNKNOWN_ERROR:
+				x.innerHTML = "An unknown error occurred."
+				break;
+		}
+	},
+	addTag:function(parent, tag){
+		if(parent == "uncategorised" || parent == ""){
+			if(tag in this.data.tags){
+				return "That TAG Already Exists";
+			}
+			else{
+				this.editSubProperty("tags", tag, []);
+				// this.setLocalStorage("appData", this.data);
+				return tag + " added to " + parent;
+			}
+		}
+		else if(typeof this.data.tags[parent] === "undefined"){
+			tags = [];
+			tags.push(tag);
+			this.editSubProperty("tags", parent, tags);
+			// this.setLocalStorage("appData", this.data);
+			return tag + " added to " + parent;
+		}
+		else {
+			tags = this.data.tags[parent];
+			if(tags.indexOf(tag) == -1){
+				tags.push(tag);
+				this.editSubProperty("tags", parent, tags);
+				// this.setLocalStorage("appData", this.data);
+				return tag + " added to " + parent;
+			}
+			else{
+				return "That TAG Already Exists";
+			}
+		}
+	},
+	displayTags:function(){
+		for(obj in app.data.tags){
+			console.log(obj);
+			for(newObj in app.data.tags[obj]){
+				console.log(app.data.tags[obj][newObj])
+			}
+		}
+	}
+}
+
+function addTag(parent, tag){
+	if(parent == "uncategorised"){
+		if(tag in app.data.tags){
+			return "That TAG Already Exists";
+		}
+		else{
+			app.editSubProperty("tags", tag, []);
+			app.setLocalStorage("appData", app.data);
+			return tag + " added to " + parent;
+		}
+	}
+	else if(typeof app.data.tags[parent] === "undefined"){
+		tags = [];
+		tags.push(tag);
+		app.editSubProperty("tags", parent, tags);
+		app.setLocalStorage("appData", app.data);
+		return tag + " added to " + parent;
+	}
+	else {
+		tags = app.data.tags[parent];
+		if(tags.indexOf(tag) == -1){
+			tags.push(tag);
+			app.editSubProperty("tags", parent, tags);
+			app.setLocalStorage("appData", app.data);
+			return tag + " added to " + parent;
+		}
+		else{
+			return "That TAG Already Exists";
+		}
+	}
+}
+
+function roughSizeOfObject( value, level ) {
+    if(level == undefined) level = 0;
+    var bytes = 0;
+
+    if ( typeof value === 'boolean' ) {
+        bytes = 4;
+    }
+    else if ( typeof value === 'string' ) {
+        bytes = value.length * 2;
+    }
+    else if ( typeof value === 'number' ) {
+        bytes = 8;
+    }
+    else if ( typeof value === 'object' ) {
+        if(value['__visited__']) return 0;
+        value['__visited__'] = 1;
+        for( i in value ) {
+            bytes += i.length * 2;
+            bytes+= 8; // an assumed existence overhead
+            bytes+= roughSizeOfObject( value[i], 1 )
+        }
+    }
+
+    if(level == 0){
+        clear__visited__(value);
+    }
+    return bytes;
+}
+
+function clear__visited__(value){
+    if(typeof value == 'object'){
+        delete value['__visited__'];
+        for(var i in value){
+            clear__visited__(value[i]);
+        }
+    }
+}
+
+function apper(data){
+	console.log(data);
+}
+
+function test(callback){
+		callback("What");
+}
+</script>
