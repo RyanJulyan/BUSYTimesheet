@@ -2,6 +2,9 @@
 var app = {
 	data:{
 		version:"0.0.1",
+		curDate:new Date(),
+		username:"",
+		records:{},
 		tags:{}
 	},
 	editProperty:function(property, value){
@@ -38,17 +41,24 @@ var app = {
 		return document.getElementById(el).innerHTML = val;
 	},
 	setLocalStorage: function(key, val){
-		console.log("Localhost");
 		localStorage.setItem(key, JSON.stringify(val));
-		this.data[key] = val;
 	},
 	getLocalStorage: function(key){
 		localStorageVal = localStorage.getItem(key);
 		try {
-			return this.data[key] = JSON.parse(localStorageVal);
+			if(JSON.parse(localStorageVal) != null){
+				if(key == 'data'){
+					return this.data = JSON.parse(localStorageVal);
+				}
+				else{
+					return this.data[key] = JSON.parse(localStorageVal);
+				}
+			}
 		}
 		catch(err) {
-			return this.data[key] = localStorageVal;
+			if(JSON.parse(localStorageVal) != null){
+				return this.data[key] = localStorageVal;
+			}
 		}
 	},
 	ajaxRequest: function(address_url){
@@ -123,13 +133,17 @@ var app = {
 		}
 	},
 	addTag:function(parent, tag){
+		console.log(this.data.tags);
+		for(obj in this.data.tags){
+			console.log(obj);
+		}
 		if(parent == "uncategorised" || parent == ""){
 			if(tag in this.data.tags){
 				return "That TAG Already Exists";
 			}
 			else{
 				this.editSubProperty("tags", tag, []);
-				// this.setLocalStorage("appData", this.data);
+				this.setLocalStorage("data", this.data);
 				return tag + " added to " + parent;
 			}
 		}
@@ -137,7 +151,7 @@ var app = {
 			tags = [];
 			tags.push(tag);
 			this.editSubProperty("tags", parent, tags);
-			// this.setLocalStorage("appData", this.data);
+			this.setLocalStorage("data", this.data);
 			return tag + " added to " + parent;
 		}
 		else {
@@ -145,7 +159,7 @@ var app = {
 			if(tags.indexOf(tag) == -1){
 				tags.push(tag);
 				this.editSubProperty("tags", parent, tags);
-				// this.setLocalStorage("appData", this.data);
+				this.setLocalStorage("data", this.data);
 				return tag + " added to " + parent;
 			}
 			else{
@@ -154,44 +168,118 @@ var app = {
 		}
 	},
 	displayTags:function(){
-		for(obj in app.data.tags){
+		for(obj in this.data.tags){
 			console.log(obj);
-			for(newObj in app.data.tags[obj]){
-				console.log(app.data.tags[obj][newObj])
+			for(newObj in this.data.tags[obj]){
+				console.log(this.data.tags[obj][newObj])
 			}
+		}
+	},
+	addRecord: function(project, record){
+		this.data.curDate = new Date();
+		this.data.lastTransactionID = this.data.curDate.getTime();
+		if(typeof record == 'undefined' || record == ""){
+			record = {};
+		}
+		if(typeof record.year == 'undefined'){
+			record["year"] = this.data.curDate.getFullYear();
+		}
+		if(typeof record.month == 'undefined'){
+			record["month"] = this.data.curDate.getMonth();
+		}
+		if(typeof record.day == 'undefined'){
+			record["day"] = this.data.curDate.getDate();
+		}
+		if(typeof record.hours == 'undefined'){
+			record["hours"] = this.data.curDate.getHours();
+		}
+		if(typeof record.minutes == 'undefined'){
+			record["minutes"] = this.data.curDate.getMinutes();
+		}
+		if(typeof record.username == 'undefined' || record.username == "" || record.username == null){
+			var guest = prompt("Please enter your username", "");
+			if (guest != null) {
+				record["username"] = guest + "_" + this.data.lastTransactionID;
+			}
+			else{
+				record["username"] = "Guest_" + this.data.lastTransactionID;
+			}
+		}
+		else{
+			record["username"] = record["username"] + "_" + this.data.lastTransactionID;
+		}
+		
+		var d = new Date(record.year, record.month, record.day, record.hours, record.minutes);
+		record["dateString"] = d;
+		if(project == "work" || project == ""){
+			console.log(record.username);
+			if(record.username in this.data.records){
+				return "That record Already Exists";
+			}
+			else{
+				project = "uncategorised";
+				var obj = {};
+				if(typeof this.data.records[project] != 'undefined'){
+					obj = this.data.records[project];
+				}
+				obj[record.username] = record;
+				this.editSubProperty("records", project, obj);
+				this.setLocalStorage("data", this.data);
+				this.addTag("companies", project);
+				return record.username + " added to " + project;
+			}
+		}
+		else if(typeof this.data.records[project] === "undefined"){
+			var obj = {};
+			obj[record.username] = record;
+			this.editSubProperty("records", project, obj);
+			this.setLocalStorage("data", this.data);
+			this.addTag("companies", project);
+			return record.username + " added to " + project;
+		}
+		else {
+			var obj = {};
+			obj = this.data.records[project];
+			obj[record.username] = record;
+			this.editSubProperty("records", project, obj);
+			this.setLocalStorage("data", this.data);
+			this.addTag("companies", project);
+			return record.username + " added to " + project;
 		}
 	}
 }
 
-function addTag(parent, tag){
-	if(parent == "uncategorised"){
-		if(tag in app.data.tags){
-			return "That TAG Already Exists";
-		}
-		else{
-			app.editSubProperty("tags", tag, []);
-			app.setLocalStorage("appData", app.data);
-			return tag + " added to " + parent;
-		}
-	}
-	else if(typeof app.data.tags[parent] === "undefined"){
-		tags = [];
-		tags.push(tag);
-		app.editSubProperty("tags", parent, tags);
-		app.setLocalStorage("appData", app.data);
-		return tag + " added to " + parent;
-	}
-	else {
-		tags = app.data.tags[parent];
-		if(tags.indexOf(tag) == -1){
-			tags.push(tag);
-			app.editSubProperty("tags", parent, tags);
-			app.setLocalStorage("appData", app.data);
-			return tag + " added to " + parent;
-		}
-		else{
-			return "That TAG Already Exists";
-		}
+	pwd:{
+		type: "password",
+		placeholder: "Password"
+	},
+	txt:{
+		type: "text",
+		placeholder: ""
+	},
+	eml:{
+		type: "email",
+		placeholder: "Email"
+	},
+	tel:{
+		type: "tel",
+		placeholder: ""
+	},
+	dat:{
+		type: "date",
+		placeholder: ""	
+	},
+	dattim:{
+		type: "datetime-local",
+		placeholder: ""	
+	},
+	col:{
+		type:"color",
+		placeholder:"Colour"
+	},
+	rng:{
+		type:"range",
+		placeholder:""
 	}
 }
 
