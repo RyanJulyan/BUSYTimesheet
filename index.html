@@ -1,22 +1,129 @@
 <!DOCTYPE html>
 <!-- saved from url=(0044)file:///C:/wamp/www/BUSYTimesheet/index.html -->
 <html class="ui-mobile"><head><meta http-equiv="Content-Type" content="text/html; charset=windows-1252"><!--<base href="file:///C:/wamp/www/BUSYTimesheet/index.html">--><base href=".">
-	<title>Foo</title>
+	<title>Timesheet</title>
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<link rel="stylesheet" href="js/jquery.mobile-1.4.5.min.css">
 	<script src="js/jquery-1.11.2.min.js"></script>
 	<script src="js/jquery.mobile-1.4.5.min.js"></script>
+    <script src="js/jquery.knob.min.js"></script>
+	<script>
+	$(function($) {
+
+		$(".knob").knob({
+			change : function (value) {
+				//console.log("change : " + value);
+			},
+			release : function (value) {
+				//console.log(this.$.attr('value'));
+				console.log("release : " + value);
+			},
+			cancel : function () {
+				console.log("cancel : ", this);
+			},
+			/*format : function (value) {
+				return value + '%';
+			},*/
+			draw : function () {
+
+				// "tron" case
+				if(this.$.data('skin') == 'tron') {
+
+					this.cursorExt = 0.3;
+
+					var a = this.arc(this.cv)  // Arc
+						, pa                   // Previous arc
+						, r = 1;
+
+					this.g.lineWidth = this.lineWidth;
+
+					if (this.o.displayPrevious) {
+						pa = this.arc(this.v);
+						this.g.beginPath();
+						this.g.strokeStyle = this.pColor;
+						this.g.arc(this.xy, this.xy, this.radius - this.lineWidth, pa.s, pa.e, pa.d);
+						this.g.stroke();
+					}
+
+					this.g.beginPath();
+					this.g.strokeStyle = r ? this.o.fgColor : this.fgColor ;
+					this.g.arc(this.xy, this.xy, this.radius - this.lineWidth, a.s, a.e, a.d);
+					this.g.stroke();
+
+					this.g.lineWidth = 2;
+					this.g.beginPath();
+					this.g.strokeStyle = this.o.fgColor;
+					this.g.arc( this.xy, this.xy, this.radius - this.lineWidth + 1 + this.lineWidth * 2 / 3, 0, 2 * Math.PI, false);
+					this.g.stroke();
+
+					return false;
+				}
+			}
+		});
+
+		// Example of infinite knob, iPod click wheel
+		var v, up=0,down=0,i=0
+			,$idir = $("div.idir")
+			,$ival = $("div.ival")
+			,incr = function() { i++; $idir.show().html("+").fadeOut(); $ival.html(i); }
+			,decr = function() { i--; $idir.show().html("-").fadeOut(); $ival.html(i); };
+		$("input.infinite").knob(
+							{
+							min : 0
+							, max : 20
+							, stopper : false
+							, change : function () {
+											if(v > this.cv){
+												if(up){
+													decr();
+													up=0;
+												}else{up=1;down=0;}
+											} else {
+												if(v < this.cv){
+													if(down){
+														incr();
+														down=0;
+													}else{down=1;up=0;}
+												}
+											}
+											v = this.cv;
+										}
+							});
+	});
+</script>
 </head>
 <body>
-
+<style>
+	.center:{
+		text-align:center;
+	}
+</style>
 <!-- Start of first page -->
-<div data-role="page" id="foo">
+<div data-role="page" id="home">
 
-	<div data-role="header">
+	<div data-role="header" data-position="fixed" data-tap-toggle="false">
+		<a href="#" class="ui-btn ui-shadow ui-corner-all ui-icon-carat-l ui-btn-icon-notext" >Back</a>
 		<h1>Timesheet</h1>
 	</div><!-- /header -->
 
 	<div role="main" class="ui-content">
+		<p style="text-align:center;">This Week</p>
+		<h1 style="text-align:center;"><strong>2</strong>hrs</h1>
+		<p style="text-align:center;" >
+		<input id="knob" class="knob" data-fgColor="#222222" data-width="30%" data-displayInput="true" data-displayPrevious="true" data-skin="tron" data-thickness="0.2" value="20" data-theme="a" disabled>
+		</p>
+		<ul data-role="listview" data-split-icon="edit" data-icon-theme="a" data-inset="true" data-filter="true">
+			<li>
+				<a href="#">
+					<h2>For:</h2>
+					<p><strong>Note:</strong>I did awesome work today</p>
+					<p><strong>Tags:</strong>Company, Category</p>
+					<span class="ui-li-count"><strong>2</strong>hrs</span>
+				</a>
+				<a href="#">Edit</a>
+			</li>
+		</ul>
+		<!--
 		<ul data-role="listview" data-inset="true">
 			<li data-role="list-divider">
 				Friday, October 8, 2010 <span class="ui-li-count">2</span>
@@ -40,11 +147,28 @@
 			    </a>
 			</li>
 		</ul>
+		-->
 	</div><!-- /content -->
 
-	<div data-role="footer">
-		<h4>Page Footer</h4>
+	<div data-role="footer" data-position="fixed" data-tap-toggle="false">
+		<div data-role="navbar">
+			<ul>
+				<li><a href="#" data-icon="plus">Add</a></li>
+				<li><a href="#" data-icon="tag">Tags</a></li>
+				<li><a href="#" data-icon="calendar">Calender</a></li>
+			</ul>
+		</div>
+		<!-- <h6>Copyright &copy; 2015 &middot; All Rights Reserved &middot; <a href="http://your website.com/" >BUSYGroup</a></h6> -->
 	</div><!-- /footer -->
 </div><!-- /page -->
+<script>
+setTimeout(function(){
+	var obj = document.getElementById('knob');
+	console.log(obj.parentElement.parentElement.style);
+	obj.parentElement.parentElement.style.background = "none";
+	obj.parentElement.parentElement.style.border = "none";
+	obj.parentElement.parentElement.style.boxShadow = "none";
+}, 0.5);
+</script>
 </body>
 </html>
