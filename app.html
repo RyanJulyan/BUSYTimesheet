@@ -1,9 +1,12 @@
+<ul id="monthList">
+</ul>
 <script>
 var app = {
 	data:{
 		version:"0.0.1",
 		curDate:new Date(),
 		username:"",
+		monthNames: ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"],
 		records:{},
 		tags:{}
 	},
@@ -60,6 +63,13 @@ var app = {
 				return this.data[key] = localStorageVal;
 			}
 		}
+	},
+	displayMonth:function(){
+		var list = "";
+		for(monthNo in this.data.monthNames){
+			list = list + "<li onclick='app.data.selectedMonth = this.innerHTML'>" + this.data.monthNames[monthNo] + "</li>";
+		}
+		this._IDhtml("monthList",list);
 	},
 	ajaxRequest: function(address_url){
 		var ajax = new XMLHttpRequest();
@@ -329,4 +339,11 @@ function apper(data){
 function test(callback){
 		callback("What");
 }
+
+var monthNames = ["January", "February", "March", "April", "May", "June",
+  "July", "August", "September", "October", "November", "December"
+];
+
+var d = new Date();
+document.write("The current month is " + monthNames[d.getMonth()]);
 </script>

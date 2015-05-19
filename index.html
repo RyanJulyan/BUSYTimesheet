@@ -93,11 +93,6 @@
 </script>
 </head>
 <body>
-<style>
-	.center:{
-		text-align:center;
-	}
-</style>
 <!-- Start of first page -->
 <div data-role="page" id="home">
 
@@ -107,22 +102,86 @@
 	</div><!-- /header -->
 
 	<div role="main" class="ui-content">
-		<p style="text-align:center;">This Week</p>
-		<h1 style="text-align:center;"><strong>2</strong>hrs</h1>
+		<p style="text-align:center; margin-bottom:50px;">This Week</p>
+		<h3 style="text-align:center;"><strong>200</strong><span style="font-size:11px;">hrs</span></h3>
 		<p style="text-align:center;" >
-		<input id="knob" class="knob" data-fgColor="#222222" data-width="30%" data-displayInput="true" data-displayPrevious="true" data-skin="tron" data-thickness="0.2" value="20" data-theme="a" disabled>
+		<input id="knob" class="knob" data-fgColor="#222222" data-width="130" data-displayInput="true" data-displayPrevious="true" data-skin="tron" data-thickness="0.2" value="20" data-theme="a" disabled>
 		</p>
-		<ul data-role="listview" data-split-icon="edit" data-icon-theme="a" data-inset="true" data-filter="true">
+		<ul data-role="listview" data-split-icon="delete" data-icon-theme="b" data-inset="true" data-filter="true">
 			<li>
-				<a href="#">
+				<a href="#editRecord" data-rel="popup" data-position-to="window" data-transition="pop">
 					<h2>For:</h2>
-					<p><strong>Note:</strong>I did awesome work today</p>
+					<p style="overflow: auto; white-space: inherit;"><strong>Note:</strong>I did awesome work today. I like detail so I am going to give lots and lots and lots and lots	</p>
 					<p><strong>Tags:</strong>Company, Category</p>
-					<span class="ui-li-count"><strong>2</strong>hrs</span>
+					<span class="ui-li-count"><strong>200</strong>hrs</span>
 				</a>
-				<a href="#">Edit</a>
+				<a href="#deleteRecord" data-rel="popup" data-position-to="window" data-transition="pop" data-theme="b" class="ui-shadow-icon">Delete</a>
 			</li>
 		</ul>
+		<div data-role="popup" id="editRecord" data-theme="a" data-overlay-theme="b" class="ui-content" style="min-width:340px;">
+			<a href="#" data-rel="back" class="ui-btn ui-corner-all ui-shadow ui-btn-a ui-icon-delete ui-btn-icon-notext ui-btn-right">Close</a>
+			<h3>Edit Record</h3>
+			<select placeholder="Select Company" data-iconpos="left">
+				<option>Company</option>
+			</select>
+			<fieldset class="ui-grid-c">
+				<div class="ui-block-a">
+				</div>
+				<div class="ui-block-b">
+				</div>
+				<div class="ui-block-c">
+				</div>
+				<div class="ui-block-d">
+					<a href="#" data-rel="back" class="ui-btn ui-icon-plus ui-btn-icon-right ui-btn-icon-notext" style="float:right;">Add Company</a>
+				</div>
+			</fieldset>
+			<select placeholder="Select Company" data-iconpos="left">
+				<option>Tag</option>
+			</select>
+			<fieldset class="ui-grid-c">
+				<div class="ui-block-a">
+				</div>
+				<div class="ui-block-b">
+				</div>
+				<div class="ui-block-c">
+				</div>
+				<div class="ui-block-d">
+					<a href="#addTag" class="ui-btn ui-icon-plus ui-btn-icon-right ui-btn-icon-notext" style="float:right;">Add Tag</a>
+				</div>
+			</fieldset>
+			<fieldset class="ui-grid-b">
+				<div class="ui-block-a">
+					<input type="datetime-local" value="" placeholder="Start Time"/>
+				</div>
+				<div class="ui-block-b">
+					<input type="datetime-local" value="" placeholder="End Time"/>
+				</div>
+				<div class="ui-block-c">
+					<input type="tel" value="" placeholder="Hours Worked"/>
+				</div>
+			</fieldset>
+			<textarea placeholder="Notes"></textarea>
+			<label>Billable</label>
+			<input type="checkbox" data-role="flipswitch" data-on-text="Yes" data-off-text="No"/>
+			<a href="#" data-rel="back" class="ui-btn ui-btn-b">Save</a>
+			<!-- <a href="#" data-rel="back" class="ui-btn ui-icon-delete ui-btn-icon-left ui-btn-inline">Close</a> -->
+		</div>
+		<div data-role="popup" id="deleteRecord" data-theme="b" data-overlay-theme="b" class="ui-content" style="min-width:340px;">
+			<a href="#" data-rel="back" class="ui-btn ui-corner-all ui-shadow ui-btn-a ui-icon-delete ui-btn-icon-notext ui-btn-right">Close</a>
+			<h3>Remove Record</h3>
+			<p>Remove Record:</p>
+			<p></p>
+			<!--  <a href="#" data-rel="back" class="ui-btn ui-btn-inline ui-btn-a">Cancel</a> -->
+			<a href="#" data-rel="back" class="ui-btn ui-btn-a">Remove</a>
+		</div>
+		<div data-role="popup" id="addTag" data-theme="b" data-overlay-theme="b" class="ui-content" style="min-width:340px;">
+			<a href="#" data-rel="back" class="ui-btn ui-corner-all ui-shadow ui-btn-a ui-icon-delete ui-btn-icon-notext ui-btn-right">Close</a>
+			<h3>Add Tag</h3>
+			<p>Remove Record:</p>
+			<p></p>
+			<!--  <a href="#" data-rel="back" class="ui-btn ui-btn-inline ui-btn-a">Cancel</a> -->
+			<a href="#" data-rel="back" class="ui-btn ui-btn-a">Add Tag</a>
+		</div>
 		<!--
 		<ul data-role="listview" data-inset="true">
 			<li data-role="list-divider">
@@ -153,7 +212,8 @@
 	<div data-role="footer" data-position="fixed" data-tap-toggle="false">
 		<div data-role="navbar">
 			<ul>
-				<li><a href="#" data-icon="plus">Add</a></li>
+				<li><a href="#" data-icon="plus">Work</a></li>
+				<li><a href="#" data-icon="navigation">Travel</a></li>
 				<li><a href="#" data-icon="tag">Tags</a></li>
 				<li><a href="#" data-icon="calendar">Calender</a></li>
 			</ul>
@@ -162,13 +222,26 @@
 	</div><!-- /footer -->
 </div><!-- /page -->
 <script>
+var obj = document.getElementById('knob');
 setTimeout(function(){
-	var obj = document.getElementById('knob');
-	console.log(obj.parentElement.parentElement.style);
 	obj.parentElement.parentElement.style.background = "none";
 	obj.parentElement.parentElement.style.border = "none";
 	obj.parentElement.parentElement.style.boxShadow = "none";
+	obj.parentElement.parentElement.style.marginTop = "-93px";
+	obj.parentElement.parentElement.style.marginBottom = "-48px";
 }, 0.5);
 </script>
+<style>
+	.center:{
+		text-align:center;
+	}
+	.ui-listview>li p, .ui-btn, .ui-listview>.ui-li-static, .ui-listview>.ui-li-divider, .ui-listview>li>a.ui-btn{
+		overflow:auto;
+		white-space: inherit;
+	}
+	.ui-li-count {
+		top: 20%;
+	}
+</style>
 </body>
 </html>
