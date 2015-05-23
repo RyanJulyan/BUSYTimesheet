@@ -5,8 +5,10 @@ var app = {
 	data:{
 		version:"0.0.1",
 		curDate:new Date(),
+		curAddress:'',
 		username:"",
 		monthNames: ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"],
+		dayNames: ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"],
 		records:{},
 		tags:{}
 	},
@@ -43,6 +45,9 @@ var app = {
 	_IDhtml:function(el, val){
 		return document.getElementById(el).innerHTML = val;
 	},
+	isOnline:function(){
+		return navigator.onLine;
+	},
 	setLocalStorage: function(key, val){
 		localStorage.setItem(key, JSON.stringify(val));
 	},
@@ -64,7 +69,17 @@ var app = {
 			}
 		}
 	},
-	displayMonth:function(){
+	displayAllStringMonths:function(){
+		var list = "";
+		for(monthNo in this.data.monthNames){
+			list = list + "<li onclick='app.data.selectedMonth = this.innerHTML'>" + this.data.monthNames[monthNo] + "</li>";
+		}
+		this._IDhtml("monthList",list);
+	},
+	getStringMonth:function(dateObj){
+		var d = new Date(dateObj);
+		return this.data.monthNames[d.getMonth()];
+		
 		var list = "";
 		for(monthNo in this.data.monthNames){
 			list = list + "<li onclick='app.data.selectedMonth = this.innerHTML'>" + this.data.monthNames[monthNo] + "</li>";
@@ -72,73 +87,64 @@ var app = {
 		this._IDhtml("monthList",list);
 	},
 	ajaxRequest: function(address_url){
-		var ajax = new XMLHttpRequest();
-		ajax.upload.addEventListener("progress", this.fileProgressHandler, false);
-		ajax.addEventListener("load", this.fileCompleteHandler, false);
-		ajax.addEventListener("error", this.fileErrorHandler, false);
-		ajax.addEventListener("abort", this.fileAbortHandler, false);
-		ajax.open("GET",address_url);
-		ajax.send();
+		xmlhttp={};
+		if (window.XMLHttpRequest){// code for IE7+, Firefox, Chrome, Opera, Safari
+			xmlhttp = new XMLHttpRequest();
+		}
+		else{// code for IE6, IE5
+			xmlhttp = new ActiveXObject("Microsoft.XMLHTTP");
+		}
+		xmlhttp.onreadystatechange=function(){
+			if (xmlhttp.readyState==4 && xmlhttp.status==200){
+				try{
+					ajaxData = JSON.parse(xmlhttp.responseText);
+					return ajaxData;
+				}
+				catch(err){
+					ajaxData = xmlhttp.responseText;
+					return ajaxData;
+				}
+			}
+		}
+		xmlhttp.open("GET",address_url,true);
+		xmlhttp.send();
 	},
-	fileUpload:function(file, url){
-		this.editProperty("file", {type:file.name});
-		this.editProperty("file", {type:file.type});
-		this.editProperty("file", {size:file.size});
-		var formdata = new FormData();
-		formdata.append("file1", file);
-		var ajax = new XMLHttpRequest();
-		ajax.upload.addEventListener("progress", this.fileProgressHandler, false);
-		ajax.addEventListener("load", this.fileCompleteHandler, false);
-		ajax.addEventListener("error", this.fileErrorHandler, false);
-		ajax.addEventListener("abort", this.fileAbortHandler, false);
-		ajax.open("POST", url);
-		ajax.send(formdata);
-	},
-	fileProgressHandler:function(event){
-		this.editProperty("file", {status:event.target.responseText});
-		this.editProperty("file", {totalUploadSize:event.total});
-		this.editProperty("file", {totalUploaded:event.loaded});
-		this.editProperty("totalUploadedMessage", "Uploaded "+event.loaded+" bytes of "+event.total);
-		this.editProperty("percentUploaded", Math.round((event.loaded / event.total) * 100));
-		this.editProperty("percentUploadedMessage", Math.round((event.loaded / event.total) * 100)+"% uploaded... please wait");
-	},
-	fileCompleteHandler:function(event){
-		console.log(this);
-		this.editProperty("file", {status:event.target.responseText});
-	},
-	fileErrorHandler:function(event){
-		this.editProperty("file", {status:"Upload Failed"});
-	},
-	fileAbortHandler:function(event){
-		this.editProperty("file", {status:"Upload Aborted"});
+	stringAddress:function(data){
+		for(arrIndex in data.results){
+			if(data.results[arrIndex].types.indexOf('street_address') != -1){
+				formatted_address = (data.results[0].formatted_address);
+				this.data.curAddress = formatted_address;
+				return this.data.curAddress;
+			}
+		}
+		formatted_address = (data.results[0].formatted_address);
+		this.data.curAddress = formatted_address;
+		return this.data.curAddress;
 	},
 	getLocation:function() {
 		if (navigator.geolocation) {
-			navigator.geolocation.getCurrentPosition(this.showPosition, this.showError);
+			navigator.geolocation.getCurrentPosition(this.getCurrentStringAddressURL, this.showError);
 		} else {
 			return "Geolocation is not supported by this browser.";
 		}
 	},
-	showPosition:function(position) {
+	getCurrentStringAddressURL:function(position) {
 		var latlon = position.coords.latitude + "," + position.coords.longitude;
-		
-		var address_url = "https://maps.googleapis.com/maps/api/geocode/json?latlng="+latlon+"&key=AIzaSyAdrM7sgTdLeqAzTB6_RmFnLB4IRkfKreY";
-		
-		this.ajaxRequest(address_url);
+		currentAddress_url = "https://maps.googleapis.com/maps/api/geocode/json?latlng="+latlon+"&key=AIzaSyCZNX3E_NcSikew5n7jfdEUMh9ctKGybA4";
 	},
 	showError:function(error) {
 		switch(error.code) {
 			case error.PERMISSION_DENIED:
-				x.innerHTML = "User denied the request for Geolocation."
+				console.log("User denied the request for Geolocation.");
 				break;
 			case error.POSITION_UNAVAILABLE:
-				x.innerHTML = "Location information is unavailable."
+				console.log("Location information is unavailable.");
 				break;
 			case error.TIMEOUT:
-				x.innerHTML = "The request to get user location timed out."
+				console.log("The request to get user location timed out.");
 				break;
 			case error.UNKNOWN_ERROR:
-				x.innerHTML = "An unknown error occurred."
+				console.log("An unknown error occurred.");
 				break;
 		}
 	},
@@ -209,21 +215,24 @@ var app = {
 		if(typeof record.username == 'undefined' || record.username == "" || record.username == null){
 			var guest = prompt("Please enter your username", "");
 			if (guest != null) {
-				record["username"] = guest + "_" + this.data.lastTransactionID;
+				record["username"] = guest;
+				record["recordTimeID"] = this.data.lastTransactionID;
 			}
 			else{
-				record["username"] = "Guest_" + this.data.lastTransactionID;
+				record["username"] = "Guest";
+				record["recordTimeID"] = this.data.lastTransactionID;
 			}
 		}
 		else{
-			record["username"] = record["username"] + "_" + this.data.lastTransactionID;
+			record["username"] = record["username"];
+			record["recordTimeID"] = this.data.lastTransactionID;
 		}
 		
 		var d = new Date(record.year, record.month, record.day, record.hours, record.minutes);
 		record["dateString"] = d;
 		if(project == "work" || project == ""){
-			console.log(record.username);
-			if(record.username in this.data.records){
+			console.log(record.recordTimeID);
+			if(record.recordTimeID in this.data.records){
 				return "That record Already Exists";
 			}
 			else{
@@ -232,29 +241,29 @@ var app = {
 				if(typeof this.data.records[project] != 'undefined'){
 					obj = this.data.records[project];
 				}
-				obj[record.username] = record;
+				obj[record.recordTimeID] = record;
 				this.editSubProperty("records", project, obj);
 				this.setLocalStorage("data", this.data);
 				this.addTag("companies", project);
-				return record.username + " added to " + project;
+				return record.recordTimeID + " added to " + project;
 			}
 		}
 		else if(typeof this.data.records[project] === "undefined"){
 			var obj = {};
-			obj[record.username] = record;
+			obj[record.recordTimeID] = record;
 			this.editSubProperty("records", project, obj);
 			this.setLocalStorage("data", this.data);
 			this.addTag("companies", project);
-			return record.username + " added to " + project;
+			return record.recordTimeID + " added to " + project;
 		}
 		else {
 			var obj = {};
 			obj = this.data.records[project];
-			obj[record.username] = record;
+			obj[record.recordTimeID] = record;
 			this.editSubProperty("records", project, obj);
 			this.setLocalStorage("data", this.data);
 			this.addTag("companies", project);
-			return record.username + " added to " + project;
+			return record.recordTimeID + " added to " + project;
 		}
 	}
 }
@@ -330,14 +339,6 @@ function clear__visited__(value){
             clear__visited__(value[i]);
         }
     }
-}
-
-function apper(data){
-	console.log(data);
-}
-
-function test(callback){
-		callback("What");
 }
 
 var monthNames = ["January", "February", "March", "April", "May", "June",
