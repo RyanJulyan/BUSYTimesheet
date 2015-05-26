@@ -93,15 +93,55 @@
 </script>
 </head>
 <body>
+<script src="js/app.js"></script>
 <!-- Start of first page -->
 <div data-role="page" id="home">
 
-	<div data-role="header" data-position="fixed" data-tap-toggle="false">
+	<div data-role="header" data-position="fixed" data-tap-toggle="false" data-id="mainHeader">
 		<a href="#" class="ui-btn ui-shadow ui-corner-all ui-icon-carat-l ui-btn-icon-notext" >Back</a>
-		<h1>Timesheet</h1>
+		<h1 id="headerName">Timesheet</h1>
+		<a href="#menu" class="ui-btn ui-shadow ui-corner-all ui-icon-bars ui-btn-icon-notext ui-btn-right" >Menu</a>
 	</div><!-- /header -->
 
+	<div data-role="panel" data-position="right" data-display="push" data-theme="b" id="menu">
+		<div class="ui-grid-a">
+			<div class="ui-block-a">
+				<a href="#" class="ui-btn ui-icon-plus ui-btn-icon-top ui-corner-all ui-btn-a">Work</a>
+			</div>
+			<div class="ui-block-b">
+				<a href="#" class="ui-btn ui-icon-navigation ui-btn-icon-top ui-corner-all ui-btn-a">Travel</a>
+			</div>
+		</div>
+		<div class="ui-grid-a">
+			<div class="ui-block-a">
+				<a href="#" class="ui-btn ui-icon-user ui-btn-icon-top ui-corner-all ui-btn-a">Lunch</a>
+			</div>
+			<div class="ui-block-b">
+				<a href="#" class="ui-btn ui-icon-calendar ui-btn-icon-top ui-corner-all ui-btn-a">Calender</a>
+			</div>
+		</div>
+		<div class="ui-grid-a">
+			<div class="ui-block-a">
+				<a href="#" class="ui-btn ui-icon-tag ui-btn-icon-top ui-corner-all ui-btn-a">Tags</a>
+			</div>
+			<div class="ui-block-b">
+				<a href="#" class="ui-btn ui-icon-phone ui-btn-icon-top ui-corner-all ui-btn-a">Clients</a>
+			</div>
+		</div>
+		<div class="ui-grid-a">
+			<div class="ui-block-a">
+				<a href="#" class="ui-btn ui-icon-info ui-btn-icon-top ui-corner-all ui-btn-a">Info</a>
+			</div>
+			<div class="ui-block-b">
+				<a href="#" class="ui-btn ui-icon-action ui-btn-icon-top ui-corner-all ui-btn-a">Export</a>
+			</div>
+		</div>
+		<a href="#" data-rel="close"  class="ui-btn ui-corner-all ui-shadow ui-icon-delete ui-btn-icon-left">Close</a>
+	</div>
 	<div role="main" class="ui-content">
+		<ul data-role="listview" data-inset="true" id="monthList" data-filter="true" >
+		</ul>
+		
 		<p style="text-align:center; margin-bottom:50px;">This Week</p>
 		<h3 style="text-align:center;"><strong>200</strong><span style="font-size:11px;">hrs</span></h3>
 		<p style="text-align:center;" >
@@ -115,24 +155,24 @@
 					<p><strong>Tags:</strong>Company, Category</p>
 					<span class="ui-li-count"><strong>200</strong>hrs</span>
 				</a>
-				<a href="#deleteRecord" data-rel="popup" data-position-to="window" data-transition="pop" data-theme="b" class="ui-shadow-icon">Delete</a>
+				<a href="#deleteRecord" data-rel="popup" data-position-to="window" data-transition="pop" data-theme="b" class="ui-shadow-icon ui-corner-all	">Delete</a>
 			</li>
 		</ul>
-		<div data-role="popup" id="editRecord" data-theme="a" data-overlay-theme="b" class="ui-content" style="min-width:340px;">
+		<div data-role="popup" id="editRecord" data-theme="a" data-overlay-theme="b" class="ui-content" style="min-width:265px;">
 			<a href="#" data-rel="back" class="ui-btn ui-corner-all ui-shadow ui-btn-a ui-icon-delete ui-btn-icon-notext ui-btn-right">Close</a>
 			<h3>Edit Record</h3>
 			<select placeholder="Select Company" data-iconpos="left">
 				<option>Company</option>
 			</select>
 			<fieldset class="ui-grid-c">
-				<div class="ui-block-a">
+					<div class="ui-block-a">
 				</div>
 				<div class="ui-block-b">
 				</div>
 				<div class="ui-block-c">
 				</div>
 				<div class="ui-block-d">
-					<a href="#" data-rel="back" class="ui-btn ui-icon-plus ui-btn-icon-right ui-btn-icon-notext" style="float:right;">Add Company</a>
+					<a href="#" data-rel="back" class="ui-btn ui-corner-all ui-shadow ui-btn-inline ui-icon-plus ui-btn-icon-right ui-btn-icon-notext" style="float:right;">Add Company</a>
 				</div>
 			</fieldset>
 			<select placeholder="Select Company" data-iconpos="left">
@@ -146,7 +186,7 @@
 				<div class="ui-block-c">
 				</div>
 				<div class="ui-block-d">
-					<a href="#addTag" class="ui-btn ui-icon-plus ui-btn-icon-right ui-btn-icon-notext" style="float:right;">Add Tag</a>
+					<a href="#addTag" class="ui-btn ui-corner-all ui-shadow ui-btn-inline ui-icon-plus ui-btn-icon-right ui-btn-icon-notext" style="float:right;">Add Tag</a>
 				</div>
 			</fieldset>
 			<fieldset class="ui-grid-b">
@@ -162,17 +202,17 @@
 			</fieldset>
 			<textarea placeholder="Notes"></textarea>
 			<label>Billable</label>
-			<input type="checkbox" data-role="flipswitch" data-on-text="Yes" data-off-text="No"/>
-			<a href="#" data-rel="back" class="ui-btn ui-btn-b">Save</a>
+			<input type="checkbox" data-role="flipswitch" data-on-text="Yes" data-off-text="No" class="ui-corner-all"/>
+			<a href="#" data-rel="back" class="ui-btn ui-corner-all ui-shadow ui-btn-b">Save</a>
 			<!-- <a href="#" data-rel="back" class="ui-btn ui-icon-delete ui-btn-icon-left ui-btn-inline">Close</a> -->
 		</div>
-		<div data-role="popup" id="deleteRecord" data-theme="b" data-overlay-theme="b" class="ui-content" style="min-width:340px;">
+		<div data-role="popup" id="deleteRecord" data-theme="b" data-overlay-theme="b" class="ui-content" style="min-width:265px;">
 			<a href="#" data-rel="back" class="ui-btn ui-corner-all ui-shadow ui-btn-a ui-icon-delete ui-btn-icon-notext ui-btn-right">Close</a>
 			<h3>Remove Record</h3>
 			<p>Remove Record:</p>
 			<p></p>
 			<!--  <a href="#" data-rel="back" class="ui-btn ui-btn-inline ui-btn-a">Cancel</a> -->
-			<a href="#" data-rel="back" class="ui-btn ui-btn-a">Remove</a>
+			<a href="#" data-rel="back" class="ui-btn ui-corner-all ui-shadow ui-btn-a">Remove</a>
 		</div>
 		<div data-role="popup" id="addTag" data-theme="b" data-overlay-theme="b" class="ui-content" style="min-width:340px;">
 			<a href="#" data-rel="back" class="ui-btn ui-corner-all ui-shadow ui-btn-a ui-icon-delete ui-btn-icon-notext ui-btn-right">Close</a>
@@ -209,12 +249,12 @@
 		-->
 	</div><!-- /content -->
 
-	<div data-role="footer" data-position="fixed" data-tap-toggle="false">
+	<div data-role="footer" data-position="fixed" data-tap-toggle="false" data-id="mainFooter">
 		<div data-role="navbar">
 			<ul>
 				<li><a href="#" data-icon="plus">Work</a></li>
 				<li><a href="#" data-icon="navigation">Travel</a></li>
-				<li><a href="#" data-icon="tag">Tags</a></li>
+				<li><a href="#" data-icon="user">Lunch</a></li>
 				<li><a href="#" data-icon="calendar">Calender</a></li>
 			</ul>
 		</div>
@@ -230,8 +270,44 @@ setTimeout(function(){
 	obj.parentElement.parentElement.style.marginTop = "-93px";
 	obj.parentElement.parentElement.style.marginBottom = "-48px";
 }, 0.5);
+app.displayAllStringMonths("monthList")
 </script>
 <style>
+	@media ( min-width: 35em ) {
+
+		/* wrap on wide viewports once open */
+
+		.ui-panel-page-content-open.ui-panel-page-content-position-left {
+			margin-right: 17em;
+		}
+		.ui-panel-page-content-open.ui-panel-page-content-position-right {
+			margin-left: 17em;
+		}
+		.ui-panel-page-content-open {
+			width: auto;
+		}
+
+		/* disable "dismiss" on wide viewports */
+		.ui-panel-dismiss {
+			display: none;
+		}
+
+		/* same as the above but for panels with display mode "push" only */
+
+		.ui-panel-page-content-open.ui-panel-page-content-position-left.ui-panel-page-content-display-push {
+			margin-right: 17em;
+		}
+		.ui-panel-page-content-open.ui-panel-page-content-position-right.ui-panel-page-content-display-push {
+			margin-left: 17em;
+		}
+		.ui-panel-page-content-open.ui-panel-page-content-display-push {
+			width: auto;
+		}
+
+		.ui-panel-dismiss-display-push {
+			display: none;
+		}
+	}
 	.center:{
 		text-align:center;
 	}
@@ -239,9 +315,11 @@ setTimeout(function(){
 		overflow:auto;
 		white-space: inherit;
 	}
+	/*
 	.ui-li-count {
 		top: 20%;
 	}
+	*/
 </style>
 </body>
 </html>
