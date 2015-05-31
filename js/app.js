@@ -71,7 +71,6 @@ var app = {
 		for(monthNo in this.data.monthNames){
 			list = list + '<li onclick="app.data.selectedMonth = this.innerHTML"><a href="#">' + this.data.monthNames[monthNo] + '<span class="ui-li-count"><strong>0</strong>hrs</span></a></li>';
 		}
-		// this._IDhtml("monthList",list);
 		$("#"+id).html(list);
 		$("#"+id).listview("refresh");
 	},
@@ -84,6 +83,14 @@ var app = {
 			list = list + "<li onclick='app.data.selectedMonth = this.innerHTML'>" + this.data.monthNames[monthNo] + "</li>";
 		}
 		this._IDhtml("monthList",list);
+	},
+	displayAllStringDays:function(id){
+		var list = "";
+		for(dayNo in this.data.dayNames){
+			list = list + '<li onclick="app.data.selectedMonth = this.innerHTML"><a href="#">' + this.data.dayNames[dayNo] + '<span class="ui-li-count"><strong>0</strong>hrs</span></a></li>';
+		}
+		$("#"+id).html(list);
+		$("#"+id).listview("refresh");
 	},
 	ajaxRequest: function(address_url){
 		xmlhttp={};
@@ -340,9 +347,86 @@ function clear__visited__(value){
     }
 }
 
-var monthNames = ["January", "February", "March", "April", "May", "June",
-  "July", "August", "September", "October", "November", "December"
-];
+function numberOfDays(year, month)
+ {
+   var d = new Date(year, month, 0);
+   return d.getDate();
+ }
 
-var d = new Date();
-document.write("The current month is " + monthNames[d.getMonth()]);
+
+ function getMonthWeeks(year, month_number)
+ {
+   var $num_of_days       = numberOfDays(year, month_number)
+    ,  $num_of_weeks      = 0
+    ,  $start_day_of_week = 0; 
+
+   for(i=1; i<=$num_of_days; i++)
+   {
+      var $day_of_week = new Date(year, month_number, i).getDay();
+      if($day_of_week==$start_day_of_week)
+      {
+        $num_of_weeks++;
+      }   
+   }
+
+    return $num_of_weeks;
+ }
+
+   var d = new Date()
+      , m = d.getMonth()
+      , y = d.getFullYear();
+	  
+	getMonthWeeks(y, m);
+
+
+function weeksOfYear(year, month, week){
+	var d = new Date();
+	(year ? year = d.getFullYear() : "");
+	(year ? month = d.getMonth() : "");
+	(year ? week = 1 : "");
+	
+	monthString = app.data.monthNames[month];
+	
+	firstDateOfMonth = new Date(year, month - 1, 1); // Date: year-month-01
+	firstDayOfMonth = firstDateOfMonth.getDay();     // 0 (Sun) to 6 (Sat)
+	firstDayOfMonthString = app.data.dayNames[firstDayOfMonth];
+	firstDateOfWeek = new Date(firstDateOfMonth);    // copy firstDateOfMonth
+
+	firstDateOfWeek.setDate(                             // move the Date object
+		firstDateOfWeek.getDate() +                      // forward by the number of
+		(firstDayOfMonth ? 7 - firstDayOfMonth : 0)      // days needed to go to
+	);                                                   // Sunday, if necessary
+
+	firstDateOfWeek.setDate(                             // move the Date object
+		firstDateOfWeek.getDate() +                      // forward by the number of
+		7 * (week - 1)                                   // weeks required (week - 1)
+	);
+
+	var dateNumbersOfMonthOnWeek = [];                   // output array of date #s
+	var datesOfMonthOnWeek = [];                         // output array of Dates
+
+	for (var i = 0; i < 7; i++) {                        // for seven days...
+
+		dateNumbersOfMonthOnWeek.push(                   // push the date number on
+			firstDateOfWeek.getDate());                  // the end of the array
+
+		datesOfMonthOnWeek.push(                         // push the date object on
+			new Date(+firstDateOfWeek));                 // the end of the array
+
+		firstDateOfWeek.setDate(
+			firstDateOfWeek.getDate() + 1);              // move to the next day
+
+	}
+	
+	console.log(monthString);
+	console.log(week);
+	console.log(dateNumbersOfMonthOnWeek);
+	
+}
+
+for(j=0;j<12;j++){
+	var test = getMonthWeeks(y, j);
+	for(i=0;i<test;i++){
+		weeksOfYear("",j,i);
+	}
+}

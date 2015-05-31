@@ -142,6 +142,9 @@
 		<ul data-role="listview" data-inset="true" id="monthList" data-filter="true" >
 		</ul>
 		
+		<ul data-role="listview" data-inset="true" id="daysList" data-filter="true" >
+		</ul>
+		
 		<p style="text-align:center; margin-bottom:50px;">This Week</p>
 		<h3 style="text-align:center;"><strong>200</strong><span style="font-size:11px;">hrs</span></h3>
 		<p style="text-align:center;" >
@@ -262,15 +265,18 @@
 	</div><!-- /footer -->
 </div><!-- /page -->
 <script>
-var obj = document.getElementById('knob');
-setTimeout(function(){
-	obj.parentElement.parentElement.style.background = "none";
-	obj.parentElement.parentElement.style.border = "none";
-	obj.parentElement.parentElement.style.boxShadow = "none";
-	obj.parentElement.parentElement.style.marginTop = "-93px";
-	obj.parentElement.parentElement.style.marginBottom = "-48px";
-}, 0.5);
-app.displayAllStringMonths("monthList")
+$(document).ready(function() {
+	var obj = document.getElementById('knob');
+	setTimeout(function(){
+		obj.parentElement.parentElement.style.background = "none";
+		obj.parentElement.parentElement.style.border = "none";
+		obj.parentElement.parentElement.style.boxShadow = "none";
+		obj.parentElement.parentElement.style.marginTop = "-93px";
+		obj.parentElement.parentElement.style.marginBottom = "-48px";
+	}, 0.5);
+	app.displayAllStringMonths("monthList");
+	app.displayAllStringDays("daysList");
+});
 </script>
 <style>
 	@media ( min-width: 35em ) {
