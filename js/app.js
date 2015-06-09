@@ -7,7 +7,10 @@ var app = {
 		monthNames: ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"],
 		dayNames: ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"],
 		records:{},
-		tags:{}
+		tags:{
+			work:[],
+			personal:[]
+		}
 	},
 	editProperty:function(property, value){
 		/*
@@ -77,12 +80,6 @@ var app = {
 	getStringMonth:function(dateObj){
 		var d = new Date(dateObj);
 		return this.data.monthNames[d.getMonth()];
-		
-		var list = "";
-		for(monthNo in this.data.monthNames){
-			list = list + "<li onclick='app.data.selectedMonth = this.innerHTML'>" + this.data.monthNames[monthNo] + "</li>";
-		}
-		this._IDhtml("monthList",list);
 	},
 	displayAllStringDays:function(id){
 		var list = "";
@@ -91,6 +88,46 @@ var app = {
 		}
 		$("#"+id).html(list);
 		$("#"+id).listview("refresh");
+	},
+	displayAllTags:function(id){
+		var list = "";
+		for(obj in this.data.tags){
+			list = list + '<li onclick="app.data.selectedMonth = this.innerHTML"><a href="#">' + obj + '<span class="ui-li-count"><strong>0</strong>hrs</span></a></li>';
+			for(subObj in this.data.tags[obj]){
+				list = list + '<li onclick="app.data.selectedMonth = this.innerHTML"><a href="#">' + this.data.tags[obj][subObj] + '<span class="ui-li-count"><strong>0</strong>hrs</span></a></li>';
+			
+			}
+		}
+		$("#"+id).html(list);
+		$("#"+id).listview("refresh");
+	},
+	getNumberOfDaysInMonth:function(year, month){
+		var d = new Date(year, month, 0);
+		return d.getDate();
+	},	
+	getMonthWeeks:function(year, month){
+		var $num_of_days = this.getNumberOfDaysInMonth(year, month)
+			,$num_of_weeks = 0
+			,$start_day_of_week = 0;
+
+		for(i=1; i<=$num_of_days; i++)
+		{
+		  var $day_of_week = new Date(year, month, i).getDay();
+		  if($day_of_week==$start_day_of_week)
+		  {
+			$num_of_weeks++;
+		  }   
+		}
+
+		return $num_of_weeks;
+	},
+	getAllWeeksDatesForYear: function(year){
+		for(j=0;j<12;j++){
+			var currMonthWeeks = this.getMonthWeeks(year, j);
+			for(i=0;i<=currMonthWeeks;i++){
+				weeksOfYear("",j,i);
+			}
+		}
 	},
 	ajaxRequest: function(address_url){
 		xmlhttp={};
@@ -155,11 +192,23 @@ var app = {
 		}
 	},
 	addTag:function(parent, tag){
-		console.log(this.data.tags);
-		for(obj in this.data.tags){
-			console.log(obj);
-		}
 		if(parent == "uncategorised" || parent == ""){
+			for(obj in this.data.tags){
+				if(tag == obj){
+					return "That TAG Already Exists";
+				}
+				else if(parent == obj){
+					return "That TAG Already Exists";
+				}
+				for(subObj in this.data.tags[obj]){
+					if(tag == this.data.tags[obj][subObj]){
+						return "That TAG Already Exists";
+					}
+					else if(parent == this.data.tags[obj][subObj]){
+						return "That TAG Already Exists";
+					}
+				}
+			}
 			if(tag in this.data.tags){
 				return "That TAG Already Exists";
 			}
@@ -169,14 +218,42 @@ var app = {
 				return tag + " added to " + parent;
 			}
 		}
-		else if(typeof this.data.tags[parent] === "undefined"){
+		else if(typeof this.data.tags[parent] === "undefined" && tag == ""){
+			console.log(typeof this.data.tags[parent] === "undefined");
+			for(obj in this.data.tags){
+				if(tag == obj){
+					return "That TAG Already Exists";
+				}
+				else if(parent == obj){
+					return "That TAG Already Exists";
+				}
+				for(subObj in this.data.tags[obj]){
+					if(parent == this.data.tags[obj][subObj]){
+						return "That TAG Already Exists";
+					}
+				}
+			}
 			tags = [];
-			tags.push(tag);
 			this.editSubProperty("tags", parent, tags);
 			this.setLocalStorage("data", this.data);
 			return tag + " added to " + parent;
 		}
 		else {
+			for(obj in this.data.tags){
+				if(tag == obj){
+					return "That TAG Already Exists";
+				}
+				for(subObj in this.data.tags[obj]){
+					if(tag == this.data.tags[obj][subObj]){
+						return "That TAG Already Exists";
+					}
+				}
+			}
+			
+			if(tag != "" || typeof tag != "undefined"){
+				this.editSubProperty("tags", parent, []);
+			}
+			
 			tags = this.data.tags[parent];
 			if(tags.indexOf(tag) == -1){
 				tags.push(tag);
@@ -218,6 +295,8 @@ var app = {
 		if(typeof record.minutes == 'undefined'){
 			record["minutes"] = this.data.curDate.getMinutes();
 		}
+		record["monthString"] = this.data.monthNames[record["month"]];
+		record["dayString"] = this.data.dayNames[record["day"]];
 		if(typeof record.username == 'undefined' || record.username == "" || record.username == null){
 			var guest = prompt("Please enter your username", "");
 			if (guest != null) {
@@ -347,43 +426,7 @@ function clear__visited__(value){
     }
 }
 
-function numberOfDays(year, month)
- {
-   var d = new Date(year, month, 0);
-   return d.getDate();
- }
-
-
- function getMonthWeeks(year, month_number)
- {
-   var $num_of_days       = numberOfDays(year, month_number)
-    ,  $num_of_weeks      = 0
-    ,  $start_day_of_week = 0; 
-
-   for(i=1; i<=$num_of_days; i++)
-   {
-      var $day_of_week = new Date(year, month_number, i).getDay();
-      if($day_of_week==$start_day_of_week)
-      {
-        $num_of_weeks++;
-      }   
-   }
-
-    return $num_of_weeks;
- }
-
-   var d = new Date()
-      , m = d.getMonth()
-      , y = d.getFullYear();
-	  
-	getMonthWeeks(y, m);
-
-
 function weeksOfYear(year, month, week){
-	var d = new Date();
-	(year ? year = d.getFullYear() : "");
-	(year ? month = d.getMonth() : "");
-	(year ? week = 1 : "");
 	
 	monthString = app.data.monthNames[month];
 	
@@ -422,11 +465,4 @@ function weeksOfYear(year, month, week){
 	console.log(week);
 	console.log(dateNumbersOfMonthOnWeek);
 	
-}
-
-for(j=0;j<12;j++){
-	var test = getMonthWeeks(y, j);
-	for(i=0;i<test;i++){
-		weeksOfYear("",j,i);
-	}
 }

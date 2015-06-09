@@ -94,50 +94,52 @@
 </head>
 <body>
 <script src="js/app.js"></script>
-<!-- Start of first page -->
-<div data-role="page" id="home">
 
+<!-- Start of home page -->
+<div data-role="page" id="homePage">
+
+	<div data-role="panel" data-rel="panel" data-position="right" data-display="push" data-theme="b" id="menu">
+		<div class="ui-grid-a">
+			<div class="ui-block-a">
+				<a href="#" data-transition="flow" class="ui-btn ui-icon-plus ui-btn-icon-top ui-corner-all ui-btn-a">Work</a>
+			</div>
+			<div class="ui-block-b">
+				<a href="#" data-transition="flow" class="ui-btn ui-icon-navigation ui-btn-icon-top ui-corner-all ui-btn-a">Travel</a>
+			</div>
+		</div>
+		<div class="ui-grid-a">
+			<div class="ui-block-a">
+				<a href="#" data-transition="flow" class="ui-btn ui-icon-user ui-btn-icon-top ui-corner-all ui-btn-a">Lunch</a>
+			</div>
+			<div class="ui-block-b">
+				<a href="#" data-transition="flow" class="ui-btn ui-icon-calendar ui-btn-icon-top ui-corner-all ui-btn-a">Calender</a>
+			</div>
+		</div>
+		<div class="ui-grid-a">
+			<div class="ui-block-a">
+				<a href="#tagsPage" data-transition="flow" class="ui-btn ui-icon-tag ui-btn-icon-top ui-corner-all ui-btn-a">Tags</a>
+			</div>
+			<div class="ui-block-b">
+				<a href="#" data-transition="flow" class="ui-btn ui-icon-phone ui-btn-icon-top ui-corner-all ui-btn-a">Clients</a>
+			</div>
+		</div>
+		<div class="ui-grid-a">
+			<div class="ui-block-a">
+				<a href="#" data-transition="flow" class="ui-btn ui-icon-info ui-btn-icon-top ui-corner-all ui-btn-a">Info</a>
+			</div>
+			<div class="ui-block-b">
+				<a href="#" data-transition="flow" class="ui-btn ui-icon-action ui-btn-icon-top ui-corner-all ui-btn-a">Export</a>
+			</div>
+		</div>
+		<a href="#" data-rel="close"  class="ui-btn ui-corner-all ui-shadow ui-icon-delete ui-btn-icon-left">Close</a>
+	</div> <!-- /panel -->
+	
 	<div data-role="header" data-position="fixed" data-tap-toggle="false" data-id="mainHeader">
 		<a href="#" class="ui-btn ui-shadow ui-corner-all ui-icon-carat-l ui-btn-icon-notext" >Back</a>
 		<h1 id="headerName">Timesheet</h1>
 		<a href="#menu" class="ui-btn ui-shadow ui-corner-all ui-icon-bars ui-btn-icon-notext ui-btn-right" >Menu</a>
 	</div><!-- /header -->
-
-	<div data-role="panel" data-position="right" data-display="push" data-theme="b" id="menu">
-		<div class="ui-grid-a">
-			<div class="ui-block-a">
-				<a href="#" class="ui-btn ui-icon-plus ui-btn-icon-top ui-corner-all ui-btn-a">Work</a>
-			</div>
-			<div class="ui-block-b">
-				<a href="#" class="ui-btn ui-icon-navigation ui-btn-icon-top ui-corner-all ui-btn-a">Travel</a>
-			</div>
-		</div>
-		<div class="ui-grid-a">
-			<div class="ui-block-a">
-				<a href="#" class="ui-btn ui-icon-user ui-btn-icon-top ui-corner-all ui-btn-a">Lunch</a>
-			</div>
-			<div class="ui-block-b">
-				<a href="#" class="ui-btn ui-icon-calendar ui-btn-icon-top ui-corner-all ui-btn-a">Calender</a>
-			</div>
-		</div>
-		<div class="ui-grid-a">
-			<div class="ui-block-a">
-				<a href="#" class="ui-btn ui-icon-tag ui-btn-icon-top ui-corner-all ui-btn-a">Tags</a>
-			</div>
-			<div class="ui-block-b">
-				<a href="#" class="ui-btn ui-icon-phone ui-btn-icon-top ui-corner-all ui-btn-a">Clients</a>
-			</div>
-		</div>
-		<div class="ui-grid-a">
-			<div class="ui-block-a">
-				<a href="#" class="ui-btn ui-icon-info ui-btn-icon-top ui-corner-all ui-btn-a">Info</a>
-			</div>
-			<div class="ui-block-b">
-				<a href="#" class="ui-btn ui-icon-action ui-btn-icon-top ui-corner-all ui-btn-a">Export</a>
-			</div>
-		</div>
-		<a href="#" data-rel="close"  class="ui-btn ui-corner-all ui-shadow ui-icon-delete ui-btn-icon-left">Close</a>
-	</div>
+	
 	<div role="main" class="ui-content">
 		<ul data-role="listview" data-inset="true" id="monthList" data-filter="true" >
 		</ul>
@@ -145,11 +147,25 @@
 		<ul data-role="listview" data-inset="true" id="daysList" data-filter="true" >
 		</ul>
 		
+		<!--
+		<ul data-role="listview" data-inset="true" id="tagsList" data-filter="true" >
+		</ul>
+		-->
+		
 		<p style="text-align:center; margin-bottom:50px;">This Week</p>
 		<h3 style="text-align:center;"><strong>200</strong><span style="font-size:11px;">hrs</span></h3>
 		<p style="text-align:center;" >
-		<input id="knob" class="knob" data-fgColor="#222222" data-width="130" data-displayInput="true" data-displayPrevious="true" data-skin="tron" data-thickness="0.2" value="20" data-theme="a" disabled>
+			<input id="knob" class="knob" data-fgColor="#222222" data-width="130" data-displayInput="true" data-displayPrevious="true" data-skin="tron" data-thickness="0.2" value="20" data-theme="a" disabled>
 		</p>
+		<div style="margin-top:-90px" class="ui-grid-d">
+			<div class="ui-block-a">
+			</div>
+			<div class="ui-block-b">
+			</div>
+			<div class="ui-block-c">
+				<a href="#" data-rel="back" class="ui-btn ui-corner-all ui-shadow ui-btn-icon-top ui-icon-plus"></a>
+			</div>
+		</div>
 		<ul data-role="listview" data-split-icon="delete" data-icon-theme="b" data-inset="true" data-filter="true">
 			<li>
 				<a href="#editRecord" data-rel="popup" data-position-to="window" data-transition="pop">
@@ -168,7 +184,7 @@
 				<option>Company</option>
 			</select>
 			<fieldset class="ui-grid-c">
-					<div class="ui-block-a">
+				<div class="ui-block-a">
 				</div>
 				<div class="ui-block-b">
 				</div>
@@ -225,31 +241,6 @@
 			<!--  <a href="#" data-rel="back" class="ui-btn ui-btn-inline ui-btn-a">Cancel</a> -->
 			<a href="#" data-rel="back" class="ui-btn ui-btn-a">Add Tag</a>
 		</div>
-		<!--
-		<ul data-role="listview" data-inset="true">
-			<li data-role="list-divider">
-				Friday, October 8, 2010 <span class="ui-li-count">2</span>
-			</li>
-			<li>
-				<a href="index.html">
-			    <h2>Stephen Weber</h2>
-			    <p>
-					<strong>You've been invited to a meeting at Filament Group in Boston, MA</strong></p>
-			    <p>Hey Stephen, if you're available at 10am tomorrow, we've got a meeting with the jQuery team.</p>
-			        <p class="ui-li-aside"><strong>6:24</strong>PM</p>
-			    </a>
-			</li>
-			<li>
-				<a href="index.html">
-			    <h2>Stephen Weber</h2>
-			    <p>
-					<strong>You've been invited to a meeting at Filament Group in Boston, MA</strong></p>
-			    <p>Hey Stephen, if you're available at 10am tomorrow, we've got a meeting with the jQuery team.</p>
-			        <p class="ui-li-aside"><strong>6:24</strong>PM</p>
-			    </a>
-			</li>
-		</ul>
-		-->
 	</div><!-- /content -->
 
 	<div data-role="footer" data-position="fixed" data-tap-toggle="false" data-id="mainFooter">
@@ -263,7 +254,36 @@
 		</div>
 		<!-- <h6>Copyright &copy; 2015 &middot; All Rights Reserved &middot; <a href="http://your website.com/" >BUSYGroup</a></h6> -->
 	</div><!-- /footer -->
-</div><!-- /page -->
+</div><!-- /end page -->
+
+<!-- Start of tags page -->
+<div data-role="page" data-add-back-btn="true" id="tagsPage">
+	
+	<div data-role="header" data-position="fixed" data-tap-toggle="false" data-id="mainHeader">
+		<a href="#homePage" class="ui-btn ui-shadow ui-corner-all ui-icon-carat-l ui-btn-icon-notext" >Back</a>
+		<h1 id="headerName">Tags</h1>
+	</div><!-- /header -->
+	
+	<div role="main" class="ui-content">
+		
+		<ul data-role="listview" data-inset="true" id="tagsList" data-filter="true" >
+		</ul>
+		
+	</div><!-- /content -->
+
+	<div data-role="footer" data-position="fixed" data-tap-toggle="false" data-id="mainFooter">
+		<div data-role="navbar">
+			<ul>
+				<li><a href="#" data-icon="plus">Work</a></li>
+				<li><a href="#" data-icon="navigation">Travel</a></li>
+				<li><a href="#" data-icon="user">Lunch</a></li>
+				<li><a href="#" data-icon="calendar">Calender</a></li>
+			</ul>
+		</div>
+		<!-- <h6>Copyright &copy; 2015 &middot; All Rights Reserved &middot; <a href="http://your website.com/" >BUSYGroup</a></h6> -->
+	</div><!-- /footer -->
+</div><!-- /end page -->
+
 <script>
 $(document).ready(function() {
 	var obj = document.getElementById('knob');
@@ -276,6 +296,7 @@ $(document).ready(function() {
 	}, 0.5);
 	app.displayAllStringMonths("monthList");
 	app.displayAllStringDays("daysList");
+	// 	app.displayAllTags("tagsList");
 });
 </script>
 <style>
