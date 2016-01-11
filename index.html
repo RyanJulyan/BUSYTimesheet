@@ -91,6 +91,36 @@
 							});
 	});
 </script>
+<script type="text/javascript" src="https://www.google.com/jsapi"></script>
+<script type="text/javascript">
+  google.load("visualization", "1", {packages:["corechart"]});
+  google.setOnLoadCallback(drawChart);
+  var data;
+  var options;
+  var chart;
+  
+  function drawChart() {
+	data = google.visualization.arrayToDataTable([
+	  ['Task', 'Hours per Week'],
+	  //['Work',     11],
+	  //['Eat',      2],
+	  //['Commute',  2],
+	  //['Watch TV', 2],
+	  //['Sleep',    7]
+	]);
+
+	options = {
+	  /*title: 'This Week',*/
+      pieSliceText: 'none',
+	  pieHole: 0.75,
+	  backgroundColor: 'none',
+	  colors: ['#0000FF', '#0033FF', '#0066FF', '#0066FF', '#0099FF', '#33CCCC', '#00CCFF']
+	};
+
+	chart = new google.visualization.PieChart(document.getElementById('donutchart'));
+	chart.draw(data, options);
+  }
+</script>
 </head>
 <body>
 <script src="js/app.js"></script>
@@ -98,21 +128,13 @@
 <!-- Start of home page -->
 <div data-role="page" id="homePage">
 
-	<div data-role="panel" data-rel="panel" data-position="right" data-display="push" data-theme="b" id="menu">
+	<div data-role="panel" data-rel="panel" data-position="left" data-display="push" data-theme="b" id="menu">
 		<div class="ui-grid-a">
 			<div class="ui-block-a">
-				<a href="#" data-transition="flow" class="ui-btn ui-icon-plus ui-btn-icon-top ui-corner-all ui-btn-a">Work</a>
+				<a href="#addRecord" data-rel="popup" data-position-to="window" data-transition="pop" class="ui-btn ui-icon-plus ui-btn-icon-top ui-corner-all ui-btn-a">Work</a>
 			</div>
 			<div class="ui-block-b">
-				<a href="#" data-transition="flow" class="ui-btn ui-icon-navigation ui-btn-icon-top ui-corner-all ui-btn-a">Travel</a>
-			</div>
-		</div>
-		<div class="ui-grid-a">
-			<div class="ui-block-a">
-				<a href="#" data-transition="flow" class="ui-btn ui-icon-user ui-btn-icon-top ui-corner-all ui-btn-a">Lunch</a>
-			</div>
-			<div class="ui-block-b">
-				<a href="#" data-transition="flow" class="ui-btn ui-icon-calendar ui-btn-icon-top ui-corner-all ui-btn-a">Calender</a>
+				<a href="#travelPage" data-transition="flow" class="ui-btn ui-icon-navigation ui-btn-icon-top ui-corner-all ui-btn-a">Travel</a>
 			</div>
 		</div>
 		<div class="ui-grid-a">
@@ -120,7 +142,15 @@
 				<a href="#tagsPage" data-transition="flow" class="ui-btn ui-icon-tag ui-btn-icon-top ui-corner-all ui-btn-a">Tags</a>
 			</div>
 			<div class="ui-block-b">
-				<a href="#" data-transition="flow" class="ui-btn ui-icon-phone ui-btn-icon-top ui-corner-all ui-btn-a">Clients</a>
+				<a href="#clientsPage" data-transition="flow" class="ui-btn ui-icon-phone ui-btn-icon-top ui-corner-all ui-btn-a">Clients</a>
+			</div>
+		</div>
+		<div class="ui-grid-a">
+			<div class="ui-block-a">
+				<a href="#calendarPage" data-transition="flow" class="ui-btn ui-icon-calendar ui-btn-icon-top ui-corner-all ui-btn-a">Calender</a>
+			</div>
+			<div class="ui-block-b">
+				<a href="#" data-transition="flow" class="ui-btn ui-icon-action ui-btn-icon-top ui-corner-all ui-btn-a">Export</a>
 			</div>
 		</div>
 		<div class="ui-grid-a">
@@ -128,104 +158,132 @@
 				<a href="#" data-transition="flow" class="ui-btn ui-icon-info ui-btn-icon-top ui-corner-all ui-btn-a">Info</a>
 			</div>
 			<div class="ui-block-b">
-				<a href="#" data-transition="flow" class="ui-btn ui-icon-action ui-btn-icon-top ui-corner-all ui-btn-a">Export</a>
+				<a href="#user" data-rel="popup" data-position-to="window" data-transition="pop" class="ui-btn ui-icon-user ui-btn-icon-top ui-corner-all ui-btn-a">User</a>
 			</div>
 		</div>
 		<a href="#" data-rel="close"  class="ui-btn ui-corner-all ui-shadow ui-icon-delete ui-btn-icon-left">Close</a>
 	</div> <!-- /panel -->
 	
 	<div data-role="header" data-position="fixed" data-tap-toggle="false" data-id="mainHeader">
-		<a href="#" class="ui-btn ui-shadow ui-corner-all ui-icon-carat-l ui-btn-icon-notext" >Back</a>
+		<a href="#menu" class="ui-btn ui-shadow ui-corner-all ui-icon-bars ui-btn-icon-notext" >Menu</a>
 		<h1 id="headerName">Timesheet</h1>
-		<a href="#menu" class="ui-btn ui-shadow ui-corner-all ui-icon-bars ui-btn-icon-notext ui-btn-right" >Menu</a>
 	</div><!-- /header -->
 	
 	<div role="main" class="ui-content">
-		<ul data-role="listview" data-inset="true" id="monthList" data-filter="true" >
-		</ul>
-		
-		<ul data-role="listview" data-inset="true" id="daysList" data-filter="true" >
-		</ul>
-		
+				
 		<!--
 		<ul data-role="listview" data-inset="true" id="tagsList" data-filter="true" >
 		</ul>
 		-->
 		
-		<p style="text-align:center; margin-bottom:50px;">This Week</p>
-		<h3 style="text-align:center;"><strong>200</strong><span style="font-size:11px;">hrs</span></h3>
-		<p style="text-align:center;" >
+		<p style="text-align:center; margin-bottom:-25px;">This Week</p>
+		<div id="donutchart" style="width: 100%; height: auto;"></div>
+		<!-- <p style="text-align:center; margin-bottom:50px;">This Week</p> -->
+		<!--h3 style="text-align:center;"><strong>200</strong><span style="font-size:11px;">hrs</span></h3-->
+		<!--p style="text-align:center;" >
 			<input id="knob" class="knob" data-fgColor="#222222" data-width="130" data-displayInput="true" data-displayPrevious="true" data-skin="tron" data-thickness="0.2" value="20" data-theme="a" disabled>
-		</p>
-		<div style="margin-top:-90px" class="ui-grid-d">
-			<div class="ui-block-a">
-			</div>
-			<div class="ui-block-b">
-			</div>
-			<div class="ui-block-c">
-				<a href="#" data-rel="back" class="ui-btn ui-corner-all ui-shadow ui-btn-icon-top ui-icon-plus"></a>
-			</div>
-		</div>
-		<ul data-role="listview" data-split-icon="delete" data-icon-theme="b" data-inset="true" data-filter="true">
-			<li>
+		</p-->
+		<ul id="recordsList" data-role="listview" data-split-icon="delete" data-icon-theme="b" data-inset="true" data-filter="true" data-filter-placeholder="Search">
+			<li style="text-align:center;">
+				Set up your Clients by clicking on the Phone button
+			</li>
+			<li style="text-align:center;">
+				Record hours by clicking on the Plus button
+			</li>
+			<!-- <li>
 				<a href="#editRecord" data-rel="popup" data-position-to="window" data-transition="pop">
 					<h2>For:</h2>
 					<p style="overflow: auto; white-space: inherit;"><strong>Note:</strong>I did awesome work today. I like detail so I am going to give lots and lots and lots and lots	</p>
-					<p><strong>Tags:</strong>Company, Category</p>
+					<p><strong>Tags:</strong>Client, Category</p>
 					<span class="ui-li-count"><strong>200</strong>hrs</span>
 				</a>
 				<a href="#deleteRecord" data-rel="popup" data-position-to="window" data-transition="pop" data-theme="b" class="ui-shadow-icon ui-corner-all	">Delete</a>
-			</li>
+			</li> -->
 		</ul>
-		<div data-role="popup" id="editRecord" data-theme="a" data-overlay-theme="b" class="ui-content" style="min-width:265px;">
+		<div data-role="popup" data-position-to="window" id="addRecord" data-theme="a" data-overlay-theme="b" class="ui-content" style="min-width:265px;">
+			<a href="#" data-rel="back" class="ui-btn ui-corner-all ui-shadow ui-btn-a ui-icon-delete ui-btn-icon-notext ui-btn-right">Close</a>
+			<h3>Add Record</h3>
+			<fieldset class="ui-grid-a">
+				<div class="ui-block-a">
+					Date:
+				</div>
+				<div class="ui-block-b">
+					Start-Time:
+				</div>
+			</fieldset>
+			<fieldset class="ui-grid-a">
+				<div class="ui-block-a">
+					<input id="addRecordDate" type="date" value="" placeholder="Date"/>
+				</div>
+				<div class="ui-block-b">
+					<input id="addRecordTime" type="time" value="" placeholder="Time"/>
+				</div>
+			</fieldset>
+			<fieldset class="ui-grid-a">
+				<div class="ui-block-a">
+					<input id="addRecordHours" type="tel" value="0" placeholder="Hours Worked"/>
+				</div>
+				<div class="ui-block-b">
+					&nbsp;
+					<select name="addRecordBil" id="addRecordBil" data-role="flipswitch"  style="float:right;">
+						<option value="no">Not</option>
+						<option selected="selected" value="yes">Bill</option>
+					</select>
+					<a href="#" style="float:left;" data-rel="back" onclick="app.addRecord($('#addRecordClient').val(),{client:$('#addRecordClient').val(), tag:$('#addRecordTag').val(), billable:$('#addRecordBil').val(), hoursWorked:$('#addRecordHours').val(), dateWorked:$('#addRecordDate').val(), dateWorkedTime:$('#addRecordTime').val(), notes:$('#addRecordNotes').val(), username: app.data.username});" class="ui-btn ui-shadow ui-icon-clock ui-corner-all ui-shadow ui-btn-b ui-btn-icon-notext">Add</a>
+					<!-- <input id="addRecordBil" type="checkbox" data-role="flipswitch" data-on-text="Bil" data-off-text="Not" class="ui-btn ui-corner-all ui-shadow ui-btn-inline" style="float:right;" checked/> -->
+				</div>
+			</fieldset>
+			<fieldset class="ui-grid-a">
+				<div class="ui-block-a">
+					Client:
+				</div>
+				<div class="ui-block-b">
+					Tag:
+				</div>
+			</fieldset>
+			<fieldset class="ui-grid-a">
+				<div class="ui-block-a">
+					<select id="addRecordClient" placeholder="Select Client" data-iconpos="left" data-mini="true">
+						<option>Client</option>
+					</select>
+				</div>
+				<div class="ui-block-b">
+					<select id="addRecordTag" placeholder="Select Company" data-iconpos="left" data-mini="true">
+						<option>Tag</option>
+					</select>
+				</div>
+			</fieldset>
+			<textarea id="addRecordNotes" placeholder="Notes"></textarea>
+			<a href="#" data-rel="back" onclick="app.addRecord($('#addRecordClient').val(),{client:$('#addRecordClient').val(), tag:$('#addRecordTag').val(), billable:$('#addRecordBil').val(), hoursWorked:$('#addRecordHours').val(), dateWorked:$('#addRecordDate').val(), dateWorkedTime:$('#addRecordTime').val(), notes:$('#addRecordNotes').val(), username: app.data.username});" class="ui-btn ui-corner-all ui-shadow ui-btn-b">Add Record</a>
+		</div>
+		<div data-role="popup" data-position-to="window" id="editRecord" data-theme="a" data-overlay-theme="b" class="ui-content" style="min-width:265px;">
 			<a href="#" data-rel="back" class="ui-btn ui-corner-all ui-shadow ui-btn-a ui-icon-delete ui-btn-icon-notext ui-btn-right">Close</a>
 			<h3>Edit Record</h3>
+			<fieldset class="ui-grid-a">
+				<div class="ui-block-a">
+					<input type="tel" value="" placeholder="Hours Worked"/>
+				</div>
+				<div class="ui-block-b">
+					<input type="checkbox" data-role="flipswitch" data-on-text="Bil" data-off-text="Not" class="ui-btn ui-corner-all ui-shadow ui-btn-inline" style="float:right;" checked/>
+				</div>
+			</fieldset>
 			<select placeholder="Select Company" data-iconpos="left">
 				<option>Company</option>
 			</select>
-			<fieldset class="ui-grid-c">
+			<fieldset class="ui-grid-a">
 				<div class="ui-block-a">
+					<input id="recordDate" type="date" value="" placeholder="Date"/>
 				</div>
 				<div class="ui-block-b">
-				</div>
-				<div class="ui-block-c">
-				</div>
-				<div class="ui-block-d">
-					<a href="#" data-rel="back" class="ui-btn ui-corner-all ui-shadow ui-btn-inline ui-icon-plus ui-btn-icon-right ui-btn-icon-notext" style="float:right;">Add Company</a>
-				</div>
-			</fieldset>
-			<select placeholder="Select Company" data-iconpos="left">
-				<option>Tag</option>
-			</select>
-			<fieldset class="ui-grid-c">
-				<div class="ui-block-a">
-				</div>
-				<div class="ui-block-b">
-				</div>
-				<div class="ui-block-c">
-				</div>
-				<div class="ui-block-d">
-					<a href="#addTag" class="ui-btn ui-corner-all ui-shadow ui-btn-inline ui-icon-plus ui-btn-icon-right ui-btn-icon-notext" style="float:right;">Add Tag</a>
-				</div>
-			</fieldset>
-			<fieldset class="ui-grid-b">
-				<div class="ui-block-a">
-					<input type="datetime-local" value="" placeholder="Start Time"/>
-				</div>
-				<div class="ui-block-b">
-					<input type="datetime-local" value="" placeholder="End Time"/>
-				</div>
-				<div class="ui-block-c">
-					<input type="tel" value="" placeholder="Hours Worked"/>
+					<select placeholder="Select Company" data-iconpos="left" data-mini="true">
+						<option>Tag</option>
+					</select>
 				</div>
 			</fieldset>
 			<textarea placeholder="Notes"></textarea>
-			<label>Billable</label>
-			<input type="checkbox" data-role="flipswitch" data-on-text="Yes" data-off-text="No" class="ui-corner-all"/>
 			<a href="#" data-rel="back" class="ui-btn ui-corner-all ui-shadow ui-btn-b">Save</a>
-			<!-- <a href="#" data-rel="back" class="ui-btn ui-icon-delete ui-btn-icon-left ui-btn-inline">Close</a> -->
 		</div>
-		<div data-role="popup" id="deleteRecord" data-theme="b" data-overlay-theme="b" class="ui-content" style="min-width:265px;">
+		<div data-role="popup" data-position-to="window" id="deleteRecord" data-theme="b" data-overlay-theme="b" class="ui-content" style="min-width:265px;">
 			<a href="#" data-rel="back" class="ui-btn ui-corner-all ui-shadow ui-btn-a ui-icon-delete ui-btn-icon-notext ui-btn-right">Close</a>
 			<h3>Remove Record</h3>
 			<p>Remove Record:</p>
@@ -233,42 +291,270 @@
 			<!--  <a href="#" data-rel="back" class="ui-btn ui-btn-inline ui-btn-a">Cancel</a> -->
 			<a href="#" data-rel="back" class="ui-btn ui-corner-all ui-shadow ui-btn-a">Remove</a>
 		</div>
-		<div data-role="popup" id="addTag" data-theme="b" data-overlay-theme="b" class="ui-content" style="min-width:340px;">
+		<div data-role="popup" data-position-to="window" id="user" data-theme="a" data-overlay-theme="b" class="ui-content" style="min-width:265px;">
 			<a href="#" data-rel="back" class="ui-btn ui-corner-all ui-shadow ui-btn-a ui-icon-delete ui-btn-icon-notext ui-btn-right">Close</a>
-			<h3>Add Tag</h3>
-			<p>Remove Record:</p>
-			<p></p>
-			<!--  <a href="#" data-rel="back" class="ui-btn ui-btn-inline ui-btn-a">Cancel</a> -->
-			<a href="#" data-rel="back" class="ui-btn ui-btn-a">Add Tag</a>
+			<h3>User</h3>
+			<input id="username" type="text" onload="$('#username').val(app.data.username)" placeholder="Username"/>
+			<a href="#" onclick="app.data.username = $('#username').val();" data-rel="back" class="ui-btn ui-corner-all ui-shadow ui-btn-b">Set User</a>
 		</div>
 	</div><!-- /content -->
 
 	<div data-role="footer" data-position="fixed" data-tap-toggle="false" data-id="mainFooter">
 		<div data-role="navbar">
 			<ul>
-				<li><a href="#" data-icon="plus">Work</a></li>
-				<li><a href="#" data-icon="navigation">Travel</a></li>
-				<li><a href="#" data-icon="user">Lunch</a></li>
-				<li><a href="#" data-icon="calendar">Calender</a></li>
+				<li><a href="#addRecord" data-rel="popup" data-position-to="window" data-transition="pop" data-icon="plus">Work</a></li>
+				<li><a href="#travelPage" data-transition="flow" data-icon="navigation">Travel</a></li>
+				<li><a href="#clientsPage" data-transition="flow" data-icon="phone">Clients</a></li>
+				<li><a href="#calendarPage" data-transition="flow" data-icon="calendar">Calender</a></li>
 			</ul>
 		</div>
-		<!-- <h6>Copyright &copy; 2015 &middot; All Rights Reserved &middot; <a href="http://your website.com/" >BUSYGroup</a></h6> -->
+		<h6>Copyright &copy; 2016 &middot; All Rights Reserved &middot; <a href="http://www.scratchpad.biz/" >ScratchPad</a></h6>
 	</div><!-- /footer -->
 </div><!-- /end page -->
 
 <!-- Start of tags page -->
 <div data-role="page" data-add-back-btn="true" id="tagsPage">
-	
+	;
 	<div data-role="header" data-position="fixed" data-tap-toggle="false" data-id="mainHeader">
-		<a href="#homePage" class="ui-btn ui-shadow ui-corner-all ui-icon-carat-l ui-btn-icon-notext" >Back</a>
-		<h1 id="headerName">Tags</h1>
+		<a href="#" data-rel="back" class="ui-btn ui-shadow ui-corner-all ui-icon-carat-l ui-btn-icon-notext" >Back</a>
+		<h1>Tags</h1>
+		<a href="#addTag" data-rel="popup" data-position-to="window" data-transition="pop" class="ui-btn ui-shadow ui-corner-all ui-icon-plus ui-btn-icon-notext" >add</a>
 	</div><!-- /header -->
 	
 	<div role="main" class="ui-content">
 		
-		<ul data-role="listview" data-inset="true" id="tagsList" data-filter="true" >
+		<ul data-role="listview" data-inset="true" id="tagsList" data-filter="true" data-filter-placeholder="Search">
+		</ul>
+		<a href="#addRecord" style="float:right;" data-rel="popup" data-position-to="window" data-transition="pop" class="ui-btn ui-icon-plus ui-btn-icon-left ui-corner-all ui-btn-a ui-btn-inline">Add</a>
+		
+		<div data-role="popup" data-position-to="window" id="addTag" data-overlay-theme="b" class="ui-content" style="min-width:340px;">
+			<a href="#" data-rel="back" class="ui-btn ui-corner-all ui-shadow ui-btn-a ui-icon-delete ui-btn-icon-notext ui-btn-right">Close</a>
+			<h3>Add Tag</h3>
+			<div class="ui-grid-a">
+				<div class="ui-block-a">
+					Parent Tag:
+				</div>
+				<div class="ui-block-b">
+					<select id="parentTag" placeholder="Select Company" data-iconpos="left" data-mini="true">
+						<option>uncategorised</option>
+					</select>
+				</div>
+			</div>
+			<p></p>
+			<input id="tagName" type="text" value="" placeholder="Tag Name"/>
+			<!--  <a href="#" data-rel="back" class="ui-btn ui-btn-inline ui-btn-a">Cancel</a> -->
+			<a href="#" data-rel="back" onclick="alert(app.addTag($('#parentTag').val(),$('#tagName').val()));" class="ui-btn ui-btn-b">Add Tag</a>
+		</div>
+	</div><!-- /content -->
+
+	<div data-role="footer" data-position="fixed" data-tap-toggle="false" data-id="mainFooter">
+		<h6>Copyright &copy; 2016 &middot; All Rights Reserved &middot; <a href="http://www.scratchpad.biz/" >ScratchPad</a></h6>
+	</div><!-- /footer -->
+</div><!-- /end page -->
+
+<div data-role="page" data-add-back-btn="true" id="clientsPage">
+	
+	<div data-role="header" data-position="fixed" data-tap-toggle="false" data-id="mainHeader">
+		<a href="#" data-rel="back" class="ui-btn ui-shadow ui-corner-all ui-icon-carat-l ui-btn-icon-notext" >Back</a>
+		<h1>Clients</h1>
+		<a href="#addClient" data-rel="popup" data-position-to="window" data-transition="pop" class="ui-btn ui-shadow ui-corner-all ui-icon-plus ui-btn-icon-notext" >add</a>
+	</div><!-- /header -->
+	
+	<div role="main" class="ui-content">
+		<h3 style="text-align:center;">
+			Click on the Plus to add a Client
+		</h3>
+		<ul data-role="listview" data-inset="true" id="clientsList" data-filter="true" data-filter-placeholder="Search">
+		</ul>
+		<a href="#addClient" style="float:right;" data-rel="popup" data-position-to="window" data-transition="pop" class="ui-btn ui-icon-plus ui-btn-icon-left ui-corner-all ui-btn-a ui-btn-inline">Add</a>
+		
+		
+		<div data-role="popup" data-position-to="window" id="addClient" data-overlay-theme="b" class="ui-content" style="min-width:340px;">
+			<a href="#" data-rel="back" class="ui-btn ui-corner-all ui-shadow ui-btn-a ui-icon-delete ui-btn-icon-notext ui-btn-right">Close</a>
+			<h3>Add Client</h3>
+			<div class="ui-grid-a">
+				<div class="ui-block-a">
+					Parent Client:
+				</div>
+				<div class="ui-block-b">
+					<select id="parentClient" placeholder="Select Company" data-iconpos="left" data-mini="true">
+						<option>uncategorised</option>
+					</select>
+				</div>
+			</div>
+			<p></p>
+			<input id="clientName" type="text" value="" placeholder="Client Name"/>
+			<!--  <a href="#" data-rel="back" class="ui-btn ui-btn-inline ui-btn-a">Cancel</a> -->
+			<a href="#" onclick="alert(app.addClient($('#parentClient').val(),$('#clientName').val()));" data-rel="back" class="ui-btn ui-btn-b">Add Client</a>
+		</div>
+	</div><!-- /content -->
+
+	<div data-role="footer" data-position="fixed" data-tap-toggle="false" data-id="mainFooter">
+		<!-- <div data-role="navbar">
+			<ul>
+				<li><a href="#" data-icon="plus">Work</a></li>
+				<li><a href="#" data-icon="navigation">Travel</a></li>
+				<li><a href="#" data-icon="user">Lunch</a></li>
+				<li><a href="#" data-icon="calendar">Calender</a></li>
+			</ul>
+		</div> -->
+		<h6>Copyright &copy; 2016 &middot; All Rights Reserved &middot; <a href="http://www.scratchpad.biz/" >ScratchPad</a></h6>
+	</div><!-- /footer -->
+</div><!-- /end page -->
+
+<div data-role="page" data-add-back-btn="true" id="travelPage">
+	
+	<div data-role="header" data-position="fixed" data-tap-toggle="false" data-id="mainHeader">
+		<a href="#" data-rel="back" class="ui-btn ui-shadow ui-corner-all ui-icon-carat-l ui-btn-icon-notext" >Back</a>
+		<h1>Travel</h1>
+		<a href="#addTravel" data-rel="popup" data-position-to="window" data-transition="pop" class="ui-btn ui-shadow ui-corner-all ui-icon-plus ui-btn-icon-notext" >add</a>
+	</div><!-- /header -->
+	
+	<div role="main" class="ui-content">
+		
+		<ul id="travelList" data-role="listview" data-split-icon="delete" data-icon-theme="b" data-inset="true" data-filter="true" data-filter-placeholder="Search">
+		</ul>
+		<a href="#addTravel" style="float:right;" data-rel="popup" data-position-to="window" data-transition="pop" class="ui-btn ui-icon-plus ui-btn-icon-left ui-corner-all ui-btn-a ui-btn-inline">Add</a>
+		
+		
+		<div data-role="popup" data-position-to="window" id="addTravel" data-theme="a" data-overlay-theme="b" class="ui-content" style="min-width:265px;">
+			<a href="#" data-rel="back" class="ui-btn ui-corner-all ui-shadow ui-btn-a ui-icon-delete ui-btn-icon-notext ui-btn-right">Close</a>
+			<h3>Add Travel</h3>
+			<input id="addTravelDate" type="date" value="" placeholder="Date"/>
+			<fieldset class="ui-grid-a">
+				<div class="ui-block-a">
+					Client:
+				</div>
+				<div class="ui-block-b">
+					Tag:
+				</div>
+			</fieldset>
+			<fieldset class="ui-grid-a">
+				<div class="ui-block-a">
+					<select id="addTravelClient" placeholder="Select Client" data-iconpos="left" data-mini="true">
+						<option>Client</option>
+					</select>
+				</div>
+				<div class="ui-block-b">
+					<select id="addTravelTag" placeholder="Select Company" data-iconpos="left" data-mini="true">
+						<option>Tag</option>
+					</select>
+				</div>
+			</fieldset>
+			<div class="ui-grid-a">
+				<div class="ui-block-a">
+					<a onclick="setFullAddress('startLocation'); startLatLon = latlon; app.addTravel($('#addTravelClient').val(),{client:$('#addTravelClient').val(), tag:$('#addTravelTag').val(), billable:$('#addTravelBil').val(), dateTraveled:$('#addTravelDate').val(), notes:$('#addTravelNotes').val(),startLatLon: startLatLon, startAddress:app.stringAddress(ajaxData), endLatLon: latlon, startAddress:app.stringAddress(ajaxData), endAddress:app.stringAddress(ajaxData), distanceTravelled: $('#addTravelDistance').val(), username: app.data.username});" href="#" data-rel="back" class="ui-btn ui-icon-navigation ui-btn-icon-left ui-corner-all ui-btn-a">Start</a>
+				</div>
+				<div class="ui-block-b">
+					<a onclick="setFullAddress('endLocation'); endLatLon = latlon;" data-transition="flow" class="ui-btn ui-icon-location ui-btn-icon-right ui-corner-all ui-btn-a">End</a>
+				</div>
+			</div>
+			<div class="ui-grid-a">
+				<div class="ui-block-a">
+					<input type="text" id="startLocation" value="" placeholder="Start Location"/>
+				</div>
+				<div class="ui-block-b">
+					<input type="text" id="endLocation" value="" placeholder="End Location"/>
+				</div>
+			</div>
+			<fieldset class="ui-grid-a">
+				<div class="ui-block-a">
+					<input id="addTravelDistance" type="tel" value="0" placeholder="Distance Traveled"/>
+				</div>
+				<div class="ui-block-b">
+					<select name="addTravelBil" id="addTravelBil" data-role="flipswitch"  style="float:right;">
+						<option value="no">Not</option>
+						<option selected="selected" value="yes">Bill</option>
+					</select>
+				</div>
+			</fieldset>
+			<textarea id="addTravelNotes" placeholder="Notes"></textarea>
+			<a href="#" data-rel="back" onclick="app.addTravel($('#addTravelClient').val(),{client:$('#addTravelClient').val(), tag:$('#addTravelTag').val(), billable:$('#addTravelBil').val(), dateTraveled:$('#addTravelDate').val(), notes:$('#addTravelNotes').val(),startLatLon: startLatLon, startAddress:app.stringAddress(ajaxData), endLatLon: latlon, startAddress:app.stringAddress(ajaxData), endAddress:app.stringAddress(ajaxData), distanceTravelled: $('#addTravelDistance').val(), username: app.data.username});" class="ui-btn ui-corner-all ui-shadow ui-btn-b">Add Travel</a>
+		</div>
+		
+	</div><!-- /content -->
+
+	<div data-role="footer" data-position="fixed" data-tap-toggle="false" data-id="mainFooter">
+		<!-- <div data-role="navbar">
+			<ul>
+				<li><a href="#" data-icon="plus">Work</a></li>
+				<li><a href="#" data-icon="navigation">Travel</a></li>
+				<li><a href="#" data-icon="user">Lunch</a></li>
+				<li><a href="#" data-icon="calendar">Calender</a></li>
+			</ul>
+		</div> -->
+		<h6>Copyright &copy; 2016 &middot; All Rights Reserved &middot; <a href="http://www.scratchpad.biz/" >ScratchPad</a></h6>
+	</div><!-- /footer -->
+</div><!-- /end page -->
+
+<!-- Start of calendar page -->
+<div data-role="page" data-add-back-btn="true" id="calendarPage">
+	
+	<div data-role="header" data-position="fixed" data-tap-toggle="false" data-id="mainHeader">
+		<a href="#" data-rel="back" class="ui-btn ui-shadow ui-corner-all ui-icon-carat-l ui-btn-icon-notext" >Back</a>
+		<h1>Calendar</h1>
+		<a href="#addTag" data-rel="popup" data-position-to="window" data-transition="pop" class="ui-btn ui-shadow ui-corner-all ui-icon-plus ui-btn-icon-notext" >add</a>
+	</div><!-- /header -->
+	
+	<div role="main" class="ui-content">
+		
+		<ul data-role="listview" data-inset="true" id="monthList" data-filter="true" data-filter-placeholder="Search">
 		</ul>
 		
+		<div data-role="popup" data-position-to="window" id="addTag" data-overlay-theme="b" class="ui-content" style="min-width:340px;">
+			<a href="#" data-rel="back" class="ui-btn ui-corner-all ui-shadow ui-btn-a ui-icon-delete ui-btn-icon-notext ui-btn-right">Close</a>
+			<h3>Add Tag</h3>
+			<div class="ui-grid-a">
+					<div class="ui-block-b">
+						<select placeholder="Select Company" data-iconpos="left" data-mini="true">
+							<option>Tag</option>
+						</select>
+					</div>
+				</div>
+				<input type="text" value="" placeholder="Tag Name"/>
+			<p></p>
+			<!--  <a href="#" data-rel="back" class="ui-btn ui-btn-inline ui-btn-a">Cancel</a> -->
+			<a href="#" data-rel="back" class="ui-btn ui-btn-b">Add Tag</a>
+		</div>
+	</div><!-- /content -->
+
+	<div data-role="footer" data-position="fixed" data-tap-toggle="false" data-id="mainFooter">
+		<!-- <div data-role="navbar">
+			<ul>
+				<li><a href="#" data-icon="plus">Work</a></li>
+				<li><a href="#" data-icon="navigation">Travel</a></li>
+				<li><a href="#" data-icon="user">Lunch</a></li>
+				<li><a href="#" data-icon="calendar">Calender</a></li>
+			</ul>
+		</div> -->
+		<h6>Copyright &copy; 2016 &middot; All Rights Reserved &middot; <a href="http://www.scratchpad.biz/" >ScratchPad</a></h6>
+	</div><!-- /footer -->
+</div><!-- /end page -->
+
+<!-- Start of weeksFromMonth page -->
+<div data-role="page" data-add-back-btn="true" id="weeksFromMonthPage">
+	
+	<div data-role="header" data-position="fixed" data-tap-toggle="false" data-id="mainHeader">
+		<a href="#" data-rel="back" class="ui-btn ui-shadow ui-corner-all ui-icon-carat-l ui-btn-icon-notext" >Back</a>
+		<h1 id="weeksFromMonth">Calendar</h1>
+	</div><!-- /header -->
+	
+	<div role="main" class="ui-content">
+			
+		<ul data-role="listview" data-inset="true" id="weeksList" data-filter="true" >
+		</ul>
+		
+		<div data-role="popup" data-position-to="window" id="addTag" data-overlay-theme="b" class="ui-content" style="min-width:340px;">
+			<a href="#" data-rel="back" class="ui-btn ui-corner-all ui-shadow ui-btn-a ui-icon-delete ui-btn-icon-notext ui-btn-right">Close</a>
+			<h3>Add Tag</h3>
+			<input type="text" value="" placeholder="Tag Name"/>
+			<select placeholder="Select Company" data-iconpos="left" data-mini="true">
+				<option>Tag</option>
+			</select>
+			<p></p>
+			<!--  <a href="#" data-rel="back" class="ui-btn ui-btn-inline ui-btn-a">Cancel</a> -->
+			<a href="#" data-rel="back" class="ui-btn ui-btn-b">Add Tag</a>
+		</div>
 	</div><!-- /content -->
 
 	<div data-role="footer" data-position="fixed" data-tap-toggle="false" data-id="mainFooter">
@@ -280,24 +566,130 @@
 				<li><a href="#" data-icon="calendar">Calender</a></li>
 			</ul>
 		</div>
-		<!-- <h6>Copyright &copy; 2015 &middot; All Rights Reserved &middot; <a href="http://your website.com/" >BUSYGroup</a></h6> -->
+		<h6>Copyright &copy; 2016 &middot; All Rights Reserved &middot; <a href="http://www.scratchpad.biz/" >ScratchPad</a></h6>
 	</div><!-- /footer -->
 </div><!-- /end page -->
 
+
+<!-- Start of daysOfTheWeek page -->
+<div data-role="page" data-add-back-btn="true" id="daysOfTheWeekPage">
+	
+	<div data-role="header" data-position="fixed" data-tap-toggle="false" data-id="mainHeader">
+		<a href="#" data-rel="back" class="ui-btn ui-shadow ui-corner-all ui-icon-carat-l ui-btn-icon-notext" >Back</a>
+		<h1 id="daysFromWeek">Calendar</h1>
+	</div><!-- /header -->
+	
+	<div role="main" class="ui-content">
+			
+		<ul data-role="listview" data-inset="true" id="daysList" data-filter="true" >
+		</ul>
+		
+		<div data-role="popup" data-position-to="window" id="addTag" data-overlay-theme="b" class="ui-content" style="min-width:340px;">
+			<a href="#" data-rel="back" class="ui-btn ui-corner-all ui-shadow ui-btn-a ui-icon-delete ui-btn-icon-notext ui-btn-right">Close</a>
+			<h3>Add Tag</h3>
+			<input type="text" value="" placeholder="Tag Name"/>
+			<select placeholder="Select Company" data-iconpos="left" data-mini="true">
+				<option>Tag</option>
+			</select>
+			<p></p>
+			<!--  <a href="#" data-rel="back" class="ui-btn ui-btn-inline ui-btn-a">Cancel</a> -->
+			<a href="#" data-rel="back" class="ui-btn ui-btn-b">Add Tag</a>
+		</div>
+	</div><!-- /content -->
+
+	<div data-role="footer" data-position="fixed" data-tap-toggle="false" data-id="mainFooter">
+		<div data-role="navbar">
+			<ul>
+				<li><a href="#" data-icon="plus">Work</a></li>
+				<li><a href="#" data-icon="navigation">Travel</a></li>
+				<li><a href="#" data-icon="user">Lunch</a></li>
+				<li><a href="#" data-icon="calendar">Calender</a></li>
+			</ul>
+		</div>
+		<h6>Copyright &copy; 2016 &middot; All Rights Reserved &middot; <a href="http://www.scratchpad.biz/" >ScratchPad</a></h6>
+	</div><!-- /footer -->
+</div><!-- /end page -->
 <script>
 $(document).ready(function() {
-	var obj = document.getElementById('knob');
-	setTimeout(function(){
-		obj.parentElement.parentElement.style.background = "none";
-		obj.parentElement.parentElement.style.border = "none";
-		obj.parentElement.parentElement.style.boxShadow = "none";
-		obj.parentElement.parentElement.style.marginTop = "-93px";
-		obj.parentElement.parentElement.style.marginBottom = "-48px";
-	}, 0.5);
-	app.displayAllStringMonths("monthList");
-	app.displayAllStringDays("daysList");
-	// 	app.displayAllTags("tagsList");
+	//var obj = document.getElementById('knob');
+	//setTimeout(function(){
+	//	obj.parentElement.parentElement.style.background = "none";
+	//	obj.parentElement.parentElement.style.border = "none";
+	//	obj.parentElement.parentElement.style.boxShadow = "none";
+	//	obj.parentElement.parentElement.style.marginTop = "-93px";
+	//	obj.parentElement.parentElement.style.marginBottom = "-48px";
+	//}, 0.5);
+	
+	// updateChart();
+	
+	app.getAllWeeksDatesForYear(new Date().getFullYear());
+	// app.displayAllStringDays("daysList");
+	// app.displayAllTags("tagsList");
+	
+	$("#daysOfTheWeekPage").on("pagebeforeshow",function(event){
+		app.displayDaysOfTheWeek('daysList');
+	});
+	$("#weeksFromMonthPage").on("pagebeforeshow",function(event){
+		app.displayWeeksOfMonth('weeksList');
+	});
+	$("#calendarPage").on("pagebeforeshow",function(event){
+		app.displayAllStringMonths('monthList');
+	});
+	$("#tagsPage").on("pagebeforeshow",function(event){
+		app.displayAllTags("tagsList");
+		app.displayAllTagsSelect("parentTag");
+	});
+	$("#addTag").on("popupafterclose",function(event){
+		app.displayAllTags("tagsList");
+		app.displayAllTagsSelect("parentTag");
+	});
+	$("#clientsPage").on("pagebeforeshow",function(event){
+		app.displayAllClients("clientsList");
+		app.displayAllClientsSelect("parentClient");
+	});
+	$("#addClient").on("popupafterclose",function(event){
+		app.displayAllClients("clientsList");
+		app.displayAllClientsSelect("parentClient");
+	});
+	$("#travelPage").on("pagebeforeshow",function(event){
+		app.getLocation();
+	});
+	$("#addTravel").on("popupafterclose",function(event){
+		app.displayAllTravel("travelList");
+	});
+	$("#addTravel").on("popupbeforeposition",function(event){
+		app.displayAllClientsSelect("addTravelClient");
+		app.displayAllTagsSelect("addTravelTag");
+		app.ajaxRequest(currentAddress_url);
+		app.getLocation();
+		// app.displayAllClients("clientsList");
+		// app.displayAllClientsSelect("parentClient");
+	});
+	$("#addRecord").on("popupbeforeposition",function(event){
+		app.displayAllClientsSelect("addRecordClient");
+		app.displayAllTagsSelect("addRecordTag");
+		app.getLocation();
+		// app.displayAllClients("clientsList");
+		// app.displayAllClientsSelect("parentClient");
+	});
+	$("#addRecord").on("popupafterclose",function(event){
+		app.displayAllRecords("recordsList");
+		updateChart();
+		// app.displayAllClientsSelect("parentClient");
+	});
 });
+
+function updateChart() {
+	var array = [['Task', 'Hours per Week']];
+	for(var obj in app.data.clientsTime){
+		array.push([obj,app.data.clientsTime[obj]]);
+	}
+
+	data = google.visualization.arrayToDataTable(array);
+
+	// redraw the chart.
+	chart.draw(data, options);
+}
 </script>
 <style>
 	@media ( min-width: 35em ) {
