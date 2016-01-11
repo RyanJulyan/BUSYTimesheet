@@ -124,6 +124,11 @@
 </head>
 <body>
 <script src="js/app.js"></script>
+<script>
+	if(app.getLocalStorage('data') !== 'undefined'){
+		app.data = app.getLocalStorage('data');
+	}
+</script>
 
 <!-- Start of home page -->
 <div data-role="page" id="homePage">
@@ -167,6 +172,7 @@
 	<div data-role="header" data-position="fixed" data-tap-toggle="false" data-id="mainHeader">
 		<a href="#menu" class="ui-btn ui-shadow ui-corner-all ui-icon-bars ui-btn-icon-notext" >Menu</a>
 		<h1 id="headerName">Timesheet</h1>
+		<a href="#sync" class="ui-btn ui-shadow ui-corner-all ui-icon-cloud ui-btn-icon-left " >Sync</a>
 	</div><!-- /header -->
 	
 	<div role="main" class="ui-content">
@@ -293,8 +299,8 @@
 		</div>
 		<div data-role="popup" data-position-to="window" id="user" data-theme="a" data-overlay-theme="b" class="ui-content" style="min-width:265px;">
 			<a href="#" data-rel="back" class="ui-btn ui-corner-all ui-shadow ui-btn-a ui-icon-delete ui-btn-icon-notext ui-btn-right">Close</a>
-			<h3>User</h3>
-			<input id="username" type="text" onload="$('#username').val(app.data.username)" placeholder="Username"/>
+			<h3>User Email</h3>
+			<input id="username" type="email" onload="$('#username').val(app.data.username)" placeholder="Email"/>
 			<a href="#" onclick="app.data.username = $('#username').val();" data-rel="back" class="ui-btn ui-corner-all ui-shadow ui-btn-b">Set User</a>
 		</div>
 	</div><!-- /content -->
@@ -318,14 +324,14 @@
 	<div data-role="header" data-position="fixed" data-tap-toggle="false" data-id="mainHeader">
 		<a href="#" data-rel="back" class="ui-btn ui-shadow ui-corner-all ui-icon-carat-l ui-btn-icon-notext" >Back</a>
 		<h1>Tags</h1>
-		<a href="#addTag" data-rel="popup" data-position-to="window" data-transition="pop" class="ui-btn ui-shadow ui-corner-all ui-icon-plus ui-btn-icon-notext" >add</a>
+		<a href="#addTag" data-rel="popup" data-position-to="window" data-transition="pop" class="ui-btn ui-shadow ui-corner-all ui-icon-plus ui-btn-icon-notext" >Add</a>
 	</div><!-- /header -->
 	
 	<div role="main" class="ui-content">
 		
 		<ul data-role="listview" data-inset="true" id="tagsList" data-filter="true" data-filter-placeholder="Search">
 		</ul>
-		<a href="#addRecord" style="float:right;" data-rel="popup" data-position-to="window" data-transition="pop" class="ui-btn ui-icon-plus ui-btn-icon-left ui-corner-all ui-btn-a ui-btn-inline">Add</a>
+		<a href="#addTag" style="float:right;" data-rel="popup" data-position-to="window" data-transition="pop" class="ui-btn ui-icon-plus ui-btn-icon-left ui-corner-all ui-btn-a ui-btn-inline">Add</a>
 		
 		<div data-role="popup" data-position-to="window" id="addTag" data-overlay-theme="b" class="ui-content" style="min-width:340px;">
 			<a href="#" data-rel="back" class="ui-btn ui-corner-all ui-shadow ui-btn-a ui-icon-delete ui-btn-icon-notext ui-btn-right">Close</a>
